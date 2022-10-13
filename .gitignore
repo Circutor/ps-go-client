@@ -1,0 +1,13 @@
+/.idea/.gitignore
+/go.sum
+/.idea/modules.xml
+/profile.cov
+/ps-go-client
+/.idea/ps-go-client.iml
+/.idea/vcs.xml
+
+# Mac
+.DS_Store
+
+# VS code
+.vscode

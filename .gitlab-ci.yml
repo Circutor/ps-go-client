@@ -1,0 +1,50 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+image: circutor/docker_go:1.19.1
+variables:
+  DOCKER_DRIVER: overlay2
+  GIT_DEPTH: 1
+default:
+  tags:
+  - docker_aws
+  - dev
+
+
+.before_script_custom:
+  before_script:
+    - export
+    - echo "List files:" && ls -l
+    - echo "User:" && whoami
+    - echo "IDs:" && id
+    - echo "Hostname:" && hostname
+    - echo "Current directory:" && pwd
+    - echo "Go version:" && go version
+
+stages:
+- test
+- build
+
+
+lint:
+  extends: .before_script_custom
+  stage: test
+  script:
+    - make lint
+
+test:
+  extends: .before_script_custom
+  stage: test
+  script:
+    - make test
+  coverage:  /total:.+\(statements\).+\d+.\d+%/
+
+build:
+  extends: .before_script_custom
+  stage: build
+  script:
+  - make build
