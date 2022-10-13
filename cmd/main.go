@@ -1,7 +1,7 @@
 package main
 
-import "ps-go-client/pkg/ps"
+import "ps-go-client/pkg/powerStudioAPI"
 
 func main() {
-	ps.CallAPI()
+	powerstudioapi.CallAPI()
 }
