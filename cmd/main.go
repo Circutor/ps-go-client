@@ -1,7 +1,7 @@
 package main
 
-import "ps-go-client/pkg/powerStudioAPI"
+import "fmt"
 
 func main() {
-	powerstudioapi.CallAPI()
+	fmt.Println("PowerStudio API")
 }
