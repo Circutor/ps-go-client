@@ -1,35 +1,52 @@
 package powerstudioapi
 
 import (
-	"fmt"
+	"net/http"
+	"ps-go-client/internal/business/model"
+	"ps-go-client/internal/business/sys/data"
+	"ps-go-client/internal/business/sys/errors"
 	"ps-go-client/internal/business/sys/httpRequest"
+	"ps-go-client/internal/business/sys/powerStudio"
 )
 
 // PowerStudio methods power studio API.
 type PowerStudio struct {
-	Request httprequest.HTTPRequest
+	Request httprequest.Request
 	Host    string
 }
 
 // NewPowerStudio creates a new PowerStudioAPI interface.
 func NewPowerStudio(host string) PowerStudio {
+	request := httprequest.NewHTTPRequest()
+
 	return PowerStudio{
-		Request: httprequest.NewHTTPRequest(),
+		Request: &request,
 		Host:    host,
 	}
 }
 
 // PowerStudioAPI contains methods power studio API.
-type PowerStudioAPI interface{}
+type PowerStudioAPI interface {
+	PsAllDevices() (*model.Devices, error)
+}
 
-// CallAPI .
-func CallAPI() {
-	r := httprequest.NewHTTPRequest()
+// PsAllDevices get all devices from power studio.
+func (ps *PowerStudio) PsAllDevices() (*model.Devices, error) {
+	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIAllDevices
 
-	res, code, err := r.NewRequest("GET", "http://10.200.200.116/services/user/devices.xml", nil, nil)
+	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, nil)
+	if err != nil {
+		return &model.Devices{}, err
+	}
 
-	fmt.Println(res)
-	fmt.Println(string(res))
-	fmt.Println(code)
-	fmt.Println(err)
+	if statusCode != http.StatusOK {
+		return &model.Devices{}, errors.ErrPowerStudioAPI
+	}
+
+	body, err := data.BodyDecode(resBody, &model.Devices{})
+	if err != nil {
+		return &model.Devices{}, err
+	}
+
+	return body.(*model.Devices), nil
 }

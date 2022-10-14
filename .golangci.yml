@@ -1,9 +1,6 @@
 run:
   tests: false
   timeout: 5m
-  skip-dirs:
-    - app/services/mqtt-broker
-    - app/services/myc-frontend-v1
 linters-settings:
   #  lll:
   #    line-length: 140
