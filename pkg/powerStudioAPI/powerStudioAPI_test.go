@@ -19,6 +19,11 @@ const (
 	fileDevicesInfoParam0 = "../../internal/business/sampleEntities/deviceInfoParam0.xml"
 	fileDevicesInfoParam1 = "../../internal/business/sampleEntities/deviceInfoParam1.xml"
 	fileDevicesInfoParam2 = "../../internal/business/sampleEntities/deviceInfoParam2.xml"
+	fileVarInfoParam0     = "../../internal/business/sampleEntities/varInfoParam0.xml"
+	fileVarInfoParamId1   = "../../internal/business/sampleEntities/varInfoParamId1.xml"
+	fileVarInfoParamId2   = "../../internal/business/sampleEntities/varInfoParamId2.xml"
+	varInfoParamVar1      = "../../internal/business/sampleEntities/varInfoParamVar1.xml"
+	varInfoParamVar2      = "../../internal/business/sampleEntities/varInfoParamVar2.xml"
 )
 
 func TestAllDevices(t *testing.T) {
@@ -219,6 +224,187 @@ func TestDeviceInfo(t *testing.T) {
 			devices, err := ps.PsDeviceInfo(nil)
 
 			assert.Equal(t, 0, len(devices.Device))
+			assert.Error(t, err)
+		}
+	}
+}
+
+func TestVarInfo(t *testing.T) {
+	t.Parallel()
+
+	t.Logf("Given the need to call VarInfo method API.")
+	{
+		uri := "http://localhost/services/user/varInfo.xml"
+
+		t.Logf("\tWhen a correct api call witch 0 parameters.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarInfoParam0)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarInfo(nil)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 0, len(vars.Var))
+		}
+
+		t.Logf("\tWhen a correct api call witch 1 parameter type id")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarInfoParamId1)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"id": "cvm-e3-mini"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarInfo(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 657, len(vars.Var))
+		}
+
+		t.Logf("\tWhen a correct api call witch 2 parameter type id")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarInfoParamId2)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"id": "cvm-e3-mini"},
+				{"id": "TCPRS1-firmware"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarInfo(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 2082, len(vars.Var))
+		}
+
+		t.Logf("\tWhen a correct api call witch 1 parameter type var")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(varInfoParamVar1)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"var": "cvm-e3-mini.AE1"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarInfo(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 1, len(vars.Var))
+		}
+
+		t.Logf("\tWhen a correct api call witch 2 parameter type var")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(varInfoParamVar2)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"var": "cvm-e3-mini.AE1"},
+				{"var": "cvm-e3-mini.AE1B"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarInfo(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 2, len(vars.Var))
+		}
+
+		t.Logf("\tWhen it fails because data unmarchal error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return([]byte(""), http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarInfo(nil)
+
+			assert.Error(t, err)
+			assert.Equal(t, 0, len(vars.Var))
+		}
+
+		t.Logf("\tWhen it fails because power studio error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+
+			uri := "http://10.10.10.10/services/user/varInfo.xml"
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return([]byte(""), http.StatusNotFound, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarInfo(nil)
+
+			assert.Equal(t, 0, len(vars.Var))
+			assert.Equal(t, errors.ErrPowerStudioAPI, err)
+		}
+
+		t.Logf("\tWhen it fails because there is timeout.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+
+			vars, err := ps.PsVarInfo(nil)
+
+			assert.Equal(t, 0, len(vars.Var))
 			assert.Error(t, err)
 		}
 	}

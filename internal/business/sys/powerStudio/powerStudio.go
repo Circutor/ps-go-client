@@ -5,4 +5,5 @@ const (
 
 	URIAllDevices  = "/services/user/devices.xml"
 	URIDevicesInfo = "/services/user/deviceInfo.xml"
+	URIVarInfo     = "/services/user/varInfo.xml"
 )

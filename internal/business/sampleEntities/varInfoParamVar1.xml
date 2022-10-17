@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<varInfo>
+    <var>
+        <id>cvm-e3-mini.AE1</id>
+        <idEx>cvm-e3-mini.AE1</idEx>
+        <title>Active energy L1</title>
+        <hasValue>T</hasValue>
+        <hasLogger>T</hasLogger>
+        <hasForced>F</hasForced>
+        <sampleMode>differential</sampleMode>
+        <measureUnits>#WH</measureUnits>
+        <unitsFactor>3</unitsFactor>
+        <decimals>3</decimals>
+        <varType>double</varType>
+        <valueInfo>
+            <ctrlType>EDIT</ctrlType>
+            <type>65535</type>
+        </valueInfo>
+    </var>
+</varInfo>

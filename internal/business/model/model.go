@@ -30,3 +30,28 @@ type DevicesInfo struct {
 		} `xml:"modules"`
 	} `xml:"device"`
 }
+
+// VarInfo identify  the main XML  as  a  response  to  the  request  for  information about variables.
+type VarInfo struct {
+	XMLName xml.Name `xml:"varInfo"`
+	Text    string   `xml:",chardata"`
+	Var     []struct {
+		Text         string `xml:",chardata"`
+		ID           string `xml:"id"`
+		IDEx         string `xml:"idEx"`
+		Title        string `xml:"title"`
+		HasValue     string `xml:"hasValue"`
+		HasLogger    string `xml:"hasLogger"`
+		HasForced    string `xml:"hasForced"`
+		SampleMode   string `xml:"sampleMode"`
+		MeasureUnits string `xml:"measureUnits"`
+		UnitsFactor  string `xml:"unitsFactor"`
+		Decimals     string `xml:"decimals"`
+		VarType      string `xml:"varType"`
+		ValueInfo    struct {
+			Text     string `xml:",chardata"`
+			CtrlType string `xml:"ctrlType"`
+			Type     string `xml:"type"`
+		} `xml:"valueInfo"`
+	} `xml:"var"`
+}
