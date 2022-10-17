@@ -22,8 +22,10 @@ func TestRequestContentQuery(t *testing.T) {
 
 	r := httpRequest.HTTPRequest{}
 
-	query := map[string]interface{}{
-		"status": false,
+	query := []map[string]interface{}{
+		{
+			"status": false,
+		},
 	}
 
 	_, status, _ := r.NewRequest("GET", "/", nil, query)

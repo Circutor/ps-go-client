@@ -14,11 +14,11 @@ type RequestMock struct {
 }
 
 // NewRequest provides a mock function with given fields: method, url, body, query
-func (_m *RequestMock) NewRequest(method string, url string, body io.Reader, query map[string]interface{}) ([]byte, int, error) {
+func (_m *RequestMock) NewRequest(method string, url string, body io.Reader, query []map[string]interface{}) ([]byte, int, error) {
 	ret := _m.Called(method, url, body, query)
 
 	var r0 []byte
-	if rf, ok := ret.Get(0).(func(string, string, io.Reader, map[string]interface{}) []byte); ok {
+	if rf, ok := ret.Get(0).(func(string, string, io.Reader, []map[string]interface{}) []byte); ok {
 		r0 = rf(method, url, body, query)
 	} else {
 		if ret.Get(0) != nil {
@@ -27,14 +27,14 @@ func (_m *RequestMock) NewRequest(method string, url string, body io.Reader, que
 	}
 
 	var r1 int
-	if rf, ok := ret.Get(1).(func(string, string, io.Reader, map[string]interface{}) int); ok {
+	if rf, ok := ret.Get(1).(func(string, string, io.Reader, []map[string]interface{}) int); ok {
 		r1 = rf(method, url, body, query)
 	} else {
 		r1 = ret.Get(1).(int)
 	}
 
 	var r2 error
-	if rf, ok := ret.Get(2).(func(string, string, io.Reader, map[string]interface{}) error); ok {
+	if rf, ok := ret.Get(2).(func(string, string, io.Reader, []map[string]interface{}) error); ok {
 		r2 = rf(method, url, body, query)
 	} else {
 		r2 = ret.Error(2)
