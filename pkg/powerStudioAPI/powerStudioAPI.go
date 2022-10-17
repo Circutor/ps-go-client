@@ -29,6 +29,7 @@ func NewPowerStudio(host string) PowerStudio {
 type PowerStudioAPI interface {
 	PsAllDevices() (*model.Devices, error)
 	PsDeviceInfo(parameters []map[string]interface{}) (*model.DevicesInfo, error)
+	PsVarInfo(parameters []map[string]interface{}) (*model.VarInfo, error)
 }
 
 // PsAllDevices get all devices from power studio.
@@ -71,4 +72,29 @@ func (ps *PowerStudio) PsDeviceInfo(parameters []map[string]interface{}) (*model
 	}
 
 	return body.(*model.DevicesInfo), nil
+}
+
+// PsVarInfo get an information variables from power studio.
+//
+// If parameter content `ids` return all variables from device.
+//
+// If parameter content `vars` return variables from the device it belongs to.
+func (ps *PowerStudio) PsVarInfo(parameters []map[string]interface{}) (*model.VarInfo, error) {
+	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarInfo
+
+	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
+	if err != nil {
+		return &model.VarInfo{}, err
+	}
+
+	if statusCode != http.StatusOK {
+		return &model.VarInfo{}, errors.ErrPowerStudioAPI
+	}
+
+	body, err := data.BodyDecode(resBody, &model.VarInfo{})
+	if err != nil {
+		return &model.VarInfo{}, err
+	}
+
+	return body.(*model.VarInfo), nil
 }
