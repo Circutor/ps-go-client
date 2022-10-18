@@ -67,3 +67,59 @@ type Values struct {
 		TextValue string `xml:"textValue"`
 	} `xml:"variable"`
 }
+
+// RecordGroup identify  the main XML  as  a  response  to  the  request  for  record about variables.
+type RecordGroup struct {
+	XMLName xml.Name `xml:"recordGroup"`
+	Text    string   `xml:",chardata"`
+	Period  string   `xml:"period"`
+	Record  []struct {
+		Text     string `xml:",chardata"`
+		DateTime string `xml:"dateTime"`
+		Field    struct {
+			Text  string `xml:",chardata"`
+			ID    string `xml:"id"`
+			Value string `xml:"value"`
+		} `xml:"field"`
+		FieldComplex struct {
+			Text  string `xml:",chardata"`
+			ID    string `xml:"id"`
+			Value string `xml:"value"`
+			Flags string `xml:"flags"`
+		} `xml:"fieldComplex"`
+		FieldARM struct {
+			Text    string `xml:",chardata"`
+			ID      string `xml:"id"`
+			Element []struct {
+				Text     string `xml:",chardata"`
+				Harmonic string `xml:"harmonic"`
+				Value    string `xml:"value"`
+			} `xml:"element"`
+		} `xml:"fieldARM"`
+		FieldFO struct {
+			Text    string `xml:",chardata"`
+			ID      string `xml:"id"`
+			Element []struct {
+				Text  string `xml:",chardata"`
+				Msec  string `xml:"msec"`
+				Value string `xml:"value"`
+			} `xml:"element"`
+		} `xml:"fieldFO"`
+		FieldEVQ struct {
+			Text             string `xml:",chardata"`
+			ID               string `xml:"id"`
+			Value            string `xml:"value"`
+			Phase            string `xml:"phase"`
+			Duration         string `xml:"duration"`
+			AverageValue     string `xml:"averageValue"`
+			PreviousValue    string `xml:"previousValue"`
+			EventType        string `xml:"eventType"`
+			EndForced        string `xml:"endForced"`
+			SemicycleVoltage []struct {
+				Text  string `xml:",chardata"`
+				Date  string `xml:"date"`
+				Value string `xml:"value"`
+			} `xml:"semicycleVoltage"`
+		} `xml:"fieldEVQ"`
+	} `xml:"record"`
+}

@@ -31,6 +31,7 @@ type PowerStudioAPI interface {
 	PsDeviceInfo(parameters []map[string]interface{}) (*model.DevicesInfo, error)
 	PsVarInfo(parameters []map[string]interface{}) (*model.VarInfo, error)
 	PsVarValue(parameters []map[string]interface{}) (*model.Values, error)
+	PsRecords(begin, end string, period int, parameters []map[string]interface{}) (*model.RecordGroup, error)
 }
 
 // PsAllDevices get all devices from power studio.
@@ -123,4 +124,37 @@ func (ps *PowerStudio) PsVarValue(parameters []map[string]interface{}) (*model.V
 	}
 
 	return body.(*model.Values), nil
+}
+
+// PsRecords get a records values from power studio.
+func (ps *PowerStudio) PsRecords(begin, end string, period int, parameters []map[string]interface{},
+) (*model.RecordGroup, error) {
+	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIRecord
+
+	if begin == "" || end == "" {
+		return &model.RecordGroup{}, errors.ErrPowerStudioParameters
+	}
+
+	parameters = append(parameters, map[string]interface{}{"begin": begin})
+	parameters = append(parameters, map[string]interface{}{"end": end})
+
+	if period > 0 {
+		parameters = append(parameters, map[string]interface{}{"period": period})
+	}
+
+	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
+	if err != nil {
+		return &model.RecordGroup{}, err
+	}
+
+	if statusCode != http.StatusOK {
+		return &model.RecordGroup{}, errors.ErrPowerStudioAPI
+	}
+
+	body, err := data.BodyDecode(resBody, &model.RecordGroup{})
+	if err != nil {
+		return &model.RecordGroup{}, err
+	}
+
+	return body.(*model.RecordGroup), nil
 }
