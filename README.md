@@ -2,7 +2,16 @@
 
 Library that contains calls to the PowerStudio API
 
-## Instance library
+## Index
+
+* [Instance library](#library)
+* [PsAllDevices](#PsAllDevices)
+* [PsDeviceInfo](#PsDeviceInfo)
+* [PsVarInfo](#PsVarInfo)
+* [PsVarValue](#PsVarValue)
+* [PsRecords](#PsRecords)
+
+## Instance library <a name="library"></a>
 
 ```go
 // ps methods. 
@@ -31,18 +40,24 @@ varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
 
 // get value var from device id.
 varsValue, err := ps.PsVarValue([]map[string]interface{}{
-{"id", "deviceName1"}
-{"id", "deviceNameN"}
+    {"id", "deviceName1"}
+    {"id", "deviceNameN"}
 })
 
 // get value var from var name.
 varsValue, err := ps.PsVarValue([]map[string]interface{}{
-{"var", "varName1"}
-{"var", "varNameN"}
+    {"var", "varName1"}
+    {"var", "varNameN"}
+})
+
+// get value records var name.
+records, err := PsRecords("18102022", "18102022", 0,[]map[string]interface{}{
+    {"var", "varName1"}
+    {"var", "varNameN"}
 })
 ```
 
-## Method `PsAllDevices()`
+## Method `PsAllDevices()` <a name="PsAllDevices"></a>
 
 Returns the list of configured devices.
 
@@ -57,7 +72,7 @@ Returns the list of configured devices.
     }
   ```
 
-## Method `PsDeviceInfo()`
+## Method `PsDeviceInfo(parameters []map[string]interface{})` <a name="PsDeviceInfo"></a>
 
 Return a devices information.
 
@@ -89,7 +104,7 @@ Return a devices information.
     }
   ```
 
-## Method `PsVarInfo()`
+## Method `PsVarInfo(parameters []map[string]interface{})` <a name="PsVarInfo"></a>
 
 Returns variable information.
 
@@ -126,7 +141,7 @@ Returns variable information.
     }
   ```
 
-## Method `PsVarValue()`
+## Method `PsVarValue(parameters []map[string]interface{})` <a name="PsVarValue"></a>
 
 Returns variable value.
 
@@ -147,5 +162,74 @@ Returns variable value.
 		        Value     string `xml:"value"`
 		        TextValue string `xml:"textValue"`
 	      } `xml:"variable"`
+    }
+  ```
+
+## Method `PsRecords(begin, end string, period int, parameters []map[string]interface{}` <a name="PsRecords"></a>
+
+Returns records value.
+
+* URI API
+    * `http://<host>/services/user/records.xml`
+    * Parameters
+        * **begin**: `?begin=DDMMYYYY`
+        * **end**: `?end=DDMMYYYY`
+        * **period**: `?period=vuale`: Default value 0.
+        * **var**: `?var=deviceVar-1?var=DeviceVar-n`
+* Response
+    ```go
+    type RecordGroup struct {
+	      XMLName xml.Name `xml:"recordGroup"`
+	      Text    string   `xml:",chardata"`
+	      Period  string   `xml:"period"`
+	      Record  []struct {
+		         Text     string `xml:",chardata"`
+		         DateTime string `xml:"dateTime"`
+		         Field    struct {
+			          Text  string `xml:",chardata"`
+			          ID    string `xml:"id"`
+			          Value string `xml:"value"`
+		         } `xml:"field"`
+		         FieldComplex struct {
+			          Text  string `xml:",chardata"`
+			          ID    string `xml:"id"`
+			          Value string `xml:"value"`
+			          Flags string `xml:"flags"`
+		         } `xml:"fieldComplex"`
+		         FieldARM struct {
+			          Text    string `xml:",chardata"`
+			          ID      string `xml:"id"`
+			          Element []struct {
+				            Text     string `xml:",chardata"`
+				            Harmonic string `xml:"harmonic"`
+				            Value    string `xml:"value"`
+			          } `xml:"element"`
+		         } `xml:"fieldARM"`
+		         FieldFO struct {
+			          Text    string `xml:",chardata"`
+			          ID      string `xml:"id"`
+			          Element []struct {
+				            Text  string `xml:",chardata"`
+				            Msec  string `xml:"msec"`
+				            Value string `xml:"value"`
+			          } `xml:"element"`
+		         } `xml:"fieldFO"`
+		         FieldEVQ struct {
+			          Text             string `xml:",chardata"`
+			          ID               string `xml:"id"`
+			          Value            string `xml:"value"`
+			          Phase            string `xml:"phase"`
+			          Duration         string `xml:"duration"`
+			          AverageValue     string `xml:"averageValue"`
+			          PreviousValue    string `xml:"previousValue"`
+			          EventType        string `xml:"eventType"`
+			          EndForced        string `xml:"endForced"`
+			          SemicycleVoltage []struct {
+				            Text  string `xml:",chardata"`
+				            Date  string `xml:"date"`
+				            Value string `xml:"value"`
+			          } `xml:"semicycleVoltage"`
+		         } `xml:"fieldEVQ"`
+	      } `xml:"record"`
     }
   ```

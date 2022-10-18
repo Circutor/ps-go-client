@@ -9,5 +9,6 @@ var (
 
 	ErrBodyDecode = "error in data response body"
 
-	ErrPowerStudioAPI = errors.New("Error in PowerStudio API")
+	ErrPowerStudioAPI        = errors.New("Error in PowerStudio API")
+	ErrPowerStudioParameters = errors.New("Error in PowerStudio parameters")
 )

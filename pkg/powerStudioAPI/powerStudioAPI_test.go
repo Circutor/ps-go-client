@@ -29,6 +29,9 @@ const (
 	fileVarValueParamId2  = "../../internal/business/sampleEntities/varValueParamId2.xml"
 	fileVarValueParamVar1 = "../../internal/business/sampleEntities/varValueParamVar1.xml"
 	fileVarValueParamVar2 = "../../internal/business/sampleEntities/varValueParamVar2.xml"
+	fileRecordsParamVar0  = "../../internal/business/sampleEntities/recordsParamVar0.xml"
+	fileRecordsParamVar1  = "../../internal/business/sampleEntities/recordsParamVar1.xml"
+	fileRecordsParamVar2  = "../../internal/business/sampleEntities/recordsParamVar2.xml"
 )
 
 func TestAllDevices(t *testing.T) {
@@ -591,6 +594,174 @@ func TestVarValue(t *testing.T) {
 			vars, err := ps.PsVarValue(nil)
 
 			assert.Equal(t, 0, len(vars.Variable))
+			assert.Error(t, err)
+		}
+	}
+}
+
+func TestRecords(t *testing.T) {
+	t.Parallel()
+
+	t.Logf("Given the need to call Records method API.")
+	{
+		uri := "http://localhost/services/user/records.xml"
+
+		t.Logf("\tWhen a correct api call witch 0 parameters type var.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileRecordsParamVar0)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameter := []map[string]interface{}{
+				{"begin": "18102022"},
+				{"end": "18102022"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameter).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 0, len(records.Record))
+		}
+
+		t.Logf("\tWhen a correct api call witch 1 parameters type var.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileRecordsParamVar1)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameter := []map[string]interface{}{
+				{"var": "CVM-C5.VMX23"},
+				{"begin": "18102022"},
+				{"end": "18102022"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameter).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			records, err := ps.PsRecords("18102022", "18102022", 0, []map[string]interface{}{
+				{"var": "CVM-C5.VMX23"},
+			})
+
+			assert.Nil(t, err)
+			assert.Equal(t, 40, len(records.Record))
+		}
+
+		t.Logf("\tWhen a correct api call witch 2 parameters type var.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileRecordsParamVar2)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameter := []map[string]interface{}{
+				{"var": "CVM-C5.VMX23"},
+				{"var": "CVM-C5.AET1"},
+				{"begin": "18102022"},
+				{"end": "18102022"},
+				{"period": 10},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameter).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			records, err := ps.PsRecords("18102022", "18102022", 10, []map[string]interface{}{
+				{"var": "CVM-C5.VMX23"},
+				{"var": "CVM-C5.AET1"},
+			})
+
+			assert.Nil(t, err)
+			assert.Equal(t, 40, len(records.Record))
+		}
+
+		t.Logf("\tWhen it fails because data unmarchal error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			parameter := []map[string]interface{}{
+				{"begin": "18102022"},
+				{"end": "18102022"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameter).
+				Return([]byte(""), http.StatusOK, nil)
+
+			ps.Request = mock
+
+			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+
+			assert.Error(t, err)
+			assert.Equal(t, 0, len(records.Record))
+		}
+
+		t.Logf("\tWhen it fails because power studio error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+
+			uri := "http://10.10.10.10/services/user/records.xml"
+
+			parameter := []map[string]interface{}{
+				{"begin": "18102022"},
+				{"end": "18102022"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameter).
+				Return([]byte(""), http.StatusNotFound, nil)
+
+			ps.Request = mock
+
+			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+
+			assert.Equal(t, 0, len(records.Record))
+			assert.Equal(t, errors.ErrPowerStudioAPI, err)
+		}
+
+		t.Logf("\tWhen it fails because there is timeout.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+
+			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+
+			assert.Equal(t, 0, len(records.Record))
+			assert.Error(t, err)
+		}
+
+		t.Logf("\tWhen it fails because there is parameters .")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			records, err := ps.PsRecords("18102022", "", 0, nil)
+
+			assert.Equal(t, 0, len(records.Record))
+			assert.Error(t, err)
+
+			records, err = ps.PsRecords("", "19102022", 0, nil)
+
+			assert.Equal(t, 0, len(records.Record))
 			assert.Error(t, err)
 		}
 	}
