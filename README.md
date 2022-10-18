@@ -1,92 +1,235 @@
 # PS GO client
 
+Library that contains calls to the PowerStudio API
 
+## Index
 
-## Getting started
+* [Instance library](#library)
+* [PsAllDevices](#PsAllDevices)
+* [PsDeviceInfo](#PsDeviceInfo)
+* [PsVarInfo](#PsVarInfo)
+* [PsVarValue](#PsVarValue)
+* [PsRecords](#PsRecords)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Instance library <a name="library"></a>
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+```go
+// ps methods. 
+ps := powerStudioAPI.NewPowerStudio("localhost")
 
-## Add your files
+// get list of devices.
+devices, err := ps.PsAllDevices()
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+// get device info.
+devicesInfo, err := ps.PsDeviceInfo([]map[string]interface{}{
+    {"id", "deviceName1"}
+    {"id", "deviceNameN"}
+})
 
+// get description var from device id.
+varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
+    {"id", "deviceName1"}
+    {"id", "deviceNameN"}
+})
+
+// get description var from var name.
+varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
+    {"var", "varName1"}
+    {"var", "varNameN"}
+})
+
+// get value var from device id.
+varsValue, err := ps.PsVarValue([]map[string]interface{}{
+    {"id", "deviceName1"}
+    {"id", "deviceNameN"}
+})
+
+// get value var from var name.
+varsValue, err := ps.PsVarValue([]map[string]interface{}{
+    {"var", "varName1"}
+    {"var", "varNameN"}
+})
+
+// get value records var name.
+records, err := PsRecords("18102022", "18102022", 0,[]map[string]interface{}{
+    {"var", "varName1"}
+    {"var", "varNameN"}
+})
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/circutorcloud/libraries/ps-go-client.git
-git branch -M main
-git push -uf origin main
-```
 
-## Integrate with your tools
+## Method `PsAllDevices()` <a name="PsAllDevices"></a>
 
-- [ ] [Set up project integrations](https://gitlab.com/circutorcloud/libraries/ps-go-client/-/settings/integrations)
+Returns the list of configured devices.
 
-## Collaborate with your team
+* URI API
+    * `http://<host>/services/user/devices.xml`
+* Response
+    ```go
+    type Devices struct {
+        XMLName xml.Name `xml:"devices"`
+        Text    string   `xml:",chardata"`
+        ID      []string `xml:"id"`
+    }
+  ```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Method `PsDeviceInfo(parameters []map[string]interface{})` <a name="PsDeviceInfo"></a>
 
-## Test and Deploy
+Return a devices information.
 
-Use the built-in continuous integration in GitLab.
+* URI API
+    * `http://<host>/services/user/deviceInfo.xml`
+    * Parameters
+        * **id**: `?id=deviceName-1?id=DeviceName-n`
+* Response
+    ```go
+    type DevicesInfo struct {
+	      XMLName xml.Name `xml:"devices"`
+	      Text    string   `xml:",chardata"`
+	      Device  []struct {
+		        Text            string   `xml:",chardata"`
+		        ID              string   `xml:"id"`
+		        Type            string   `xml:"type"`
+		        TypeDescription string   `xml:"typeDescription"`
+		        Var             []string `xml:"var"`
+		        SerialNumber    string   `xml:"serialNumber"`
+		        Modules         struct {
+			          Text   string `xml:",chardata"`
+                      Module struct {
+				            Text  string `xml:",chardata"`
+				            StNum string `xml:"stNum"`
+				            Model string `xml:"model"`
+			          } `xml:"module"`
+		        } `xml:"modules"`
+	      } `xml:"device"`
+    }
+  ```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Method `PsVarInfo(parameters []map[string]interface{})` <a name="PsVarInfo"></a>
 
-***
+Returns variable information.
 
-# Editing this README
+* URI API
+    * `http://<host>/services/user/varInfo.xml`
+    * Parameters
+        * **var**: `?var=deviceVar-1?var=DeviceVar-n`
+        * **id**: `?id=deviceName`
+          * If parameter content `id` return all variables from device.
+* Response
+    ```go
+    type VarInfo struct {
+          XMLName xml.Name `xml:"varInfo"`
+          Text    string   `xml:",chardata"`
+          Var     []struct {
+		            Text         string `xml:",chardata"`
+		            ID           string `xml:"id"`
+		            IdEx         string `xml:"idEx"`
+		            Title        string `xml:"title"`
+		            HasValue     string `xml:"hasValue"`
+		            HasLogger    string `xml:"hasLogger"`
+		            HasForced    string `xml:"hasForced"`
+		            SampleMode   string `xml:"sampleMode"`
+		            MeasureUnits string `xml:"measureUnits"`
+		            UnitsFactor  string `xml:"unitsFactor"`
+		            Decimals     string `xml:"decimals"`
+		            VarType      string `xml:"varType"`
+		            ValueInfo    struct {
+			              Text     string `xml:",chardata"`
+			              CtrlType string `xml:"ctrlType"`
+			              Type     string `xml:"type"`
+		            } `xml:"valueInfo"`
+	         } `xml:"var"`
+    }
+  ```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## Method `PsVarValue(parameters []map[string]interface{})` <a name="PsVarValue"></a>
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Returns variable value.
 
-## Name
-Choose a self-explaining name for your project.
+* URI API
+    * `http://<host>/services/user/values.xml`
+    * Parameters
+        * **var**: `?var=deviceVar-1?var=DeviceVar-n`
+        * **id**: `?id=deviceName`
+            * If parameter content `id` return all variables from device.
+* Response
+    ```go
+    type Values struct {
+	      XMLName  xml.Name `xml:"values"`
+	      Text     string   `xml:",chardata"`
+	      Variable []struct {
+		        Text      string `xml:",chardata"`
+		        ID        string `xml:"id"`
+		        Value     string `xml:"value"`
+		        TextValue string `xml:"textValue"`
+	      } `xml:"variable"`
+    }
+  ```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Method `PsRecords(begin, end string, period int, parameters []map[string]interface{}` <a name="PsRecords"></a>
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Returns records value.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+* URI API
+    * `http://<host>/services/user/records.xml`
+    * Parameters
+        * **begin**: `?begin=DDMMYYYY`
+        * **end**: `?end=DDMMYYYY`
+        * **period**: `?period=vuale`: Default value 0.
+        * **var**: `?var=deviceVar-1?var=DeviceVar-n`
+* Response
+    ```go
+    type RecordGroup struct {
+	      XMLName xml.Name `xml:"recordGroup"`
+	      Text    string   `xml:",chardata"`
+	      Period  string   `xml:"period"`
+	      Record  []struct {
+		         Text     string `xml:",chardata"`
+		         DateTime string `xml:"dateTime"`
+		         Field    struct {
+			          Text  string `xml:",chardata"`
+			          ID    string `xml:"id"`
+			          Value string `xml:"value"`
+		         } `xml:"field"`
+		         FieldComplex struct {
+			          Text  string `xml:",chardata"`
+			          ID    string `xml:"id"`
+			          Value string `xml:"value"`
+			          Flags string `xml:"flags"`
+		         } `xml:"fieldComplex"`
+		         FieldARM struct {
+			          Text    string `xml:",chardata"`
+			          ID      string `xml:"id"`
+			          Element []struct {
+				            Text     string `xml:",chardata"`
+				            Harmonic string `xml:"harmonic"`
+				            Value    string `xml:"value"`
+			          } `xml:"element"`
+		         } `xml:"fieldARM"`
+		         FieldFO struct {
+			          Text    string `xml:",chardata"`
+			          ID      string `xml:"id"`
+			          Element []struct {
+				            Text  string `xml:",chardata"`
+				            Msec  string `xml:"msec"`
+				            Value string `xml:"value"`
+			          } `xml:"element"`
+		         } `xml:"fieldFO"`
+		         FieldEVQ struct {
+			          Text             string `xml:",chardata"`
+			          ID               string `xml:"id"`
+			          Value            string `xml:"value"`
+			          Phase            string `xml:"phase"`
+			          Duration         string `xml:"duration"`
+			          AverageValue     string `xml:"averageValue"`
+			          PreviousValue    string `xml:"previousValue"`
+			          EventType        string `xml:"eventType"`
+			          EndForced        string `xml:"endForced"`
+			          SemicycleVoltage []struct {
+				            Text  string `xml:",chardata"`
+				            Date  string `xml:"date"`
+				            Value string `xml:"value"`
+			          } `xml:"semicycleVoltage"`
+		         } `xml:"fieldEVQ"`
+	      } `xml:"record"`
+    }
+  ```

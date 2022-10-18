@@ -3,7 +3,8 @@ package data
 import (
 	"encoding/xml"
 	"fmt"
-	"ps-go-client/internal/business/sys/errors"
+
+	"github.com/circutor/ps-go-client/internal/business/sys/errors"
 )
 
 // BodyDecode data body of response object to data object type.
