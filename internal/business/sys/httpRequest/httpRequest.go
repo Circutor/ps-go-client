@@ -10,7 +10,7 @@ import (
 
 // Request interface created a new request.
 type Request interface {
-	NewRequest(method, url string, body io.Reader, query map[string]interface{}) ([]byte, int, error)
+	NewRequest(method, url string, body io.Reader, query []map[string]interface{}) ([]byte, int, error)
 }
 
 //go:generate mockery --name Request --structname RequestMock --filename RequestMock.go
@@ -23,11 +23,13 @@ func NewHTTPRequest() HTTPRequest {
 }
 
 // addQueryParameters method aggregate queries in to the request.
-func addQueryParameters(req *http.Request, queryParameters map[string]interface{}) {
+func addQueryParameters(req *http.Request, queryParameters []map[string]interface{}) {
 	query := req.URL.Query()
 
-	for key, element := range queryParameters {
-		query.Add(key, fmt.Sprintf("%v", element))
+	for _, element := range queryParameters {
+		for key, param := range element {
+			query.Add(key, fmt.Sprintf("%v", param))
+		}
 	}
 
 	req.URL.RawQuery = query.Encode()

@@ -10,7 +10,7 @@ import (
 
 // NewRequest generate request.
 func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
-	query map[string]interface{},
+	query []map[string]interface{},
 ) ([]byte, int, error) {
 	ctx := context.Background()
 
