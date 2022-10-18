@@ -5,6 +5,8 @@
 /.idea/ps-go-client.iml
 /.idea/vcs.xml
 
+vendor
+
 # Mac
 .DS_Store
 
