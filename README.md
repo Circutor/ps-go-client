@@ -28,6 +28,18 @@ varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
     {"var", "varName1"}
     {"var", "varNameN"}
 })
+
+// get value var from device id.
+varsValue, err := ps.PsVarValue([]map[string]interface{}{
+{"id", "deviceName1"}
+{"id", "deviceNameN"}
+})
+
+// get value var from var name.
+varsValue, err := ps.PsVarValue([]map[string]interface{}{
+{"var", "varName1"}
+{"var", "varNameN"}
+})
 ```
 
 ## Method `PsAllDevices()`
@@ -111,5 +123,29 @@ Returns variable information.
 			              Type     string `xml:"type"`
 		            } `xml:"valueInfo"`
 	         } `xml:"var"`
+    }
+  ```
+
+## Method `PsVarValue()`
+
+Returns variable value.
+
+* URI API
+    * `http://<host>/services/user/values.xml`
+    * Parameters
+        * **var**: `?var=deviceVar-1?var=DeviceVar-n`
+        * **id**: `?id=deviceName`
+            * If parameter content `id` return all variables from device.
+* Response
+    ```go
+    type Values struct {
+	      XMLName  xml.Name `xml:"values"`
+	      Text     string   `xml:",chardata"`
+	      Variable []struct {
+		        Text      string `xml:",chardata"`
+		        ID        string `xml:"id"`
+		        Value     string `xml:"value"`
+		        TextValue string `xml:"textValue"`
+	      } `xml:"variable"`
     }
   ```

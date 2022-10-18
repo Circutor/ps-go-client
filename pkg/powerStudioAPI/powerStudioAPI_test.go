@@ -22,8 +22,13 @@ const (
 	fileVarInfoParam0     = "../../internal/business/sampleEntities/varInfoParam0.xml"
 	fileVarInfoParamId1   = "../../internal/business/sampleEntities/varInfoParamId1.xml"
 	fileVarInfoParamId2   = "../../internal/business/sampleEntities/varInfoParamId2.xml"
-	varInfoParamVar1      = "../../internal/business/sampleEntities/varInfoParamVar1.xml"
-	varInfoParamVar2      = "../../internal/business/sampleEntities/varInfoParamVar2.xml"
+	fileVarInfoParamVar1  = "../../internal/business/sampleEntities/varInfoParamVar1.xml"
+	fileVarInfoParamVar2  = "../../internal/business/sampleEntities/varInfoParamVar2.xml"
+	fileVarValueParam0    = "../../internal/business/sampleEntities/varValueParam0.xml"
+	fileVarValueParamId1  = "../../internal/business/sampleEntities/varValueParamId1.xml"
+	fileVarValueParamId2  = "../../internal/business/sampleEntities/varValueParamId2.xml"
+	fileVarValueParamVar1 = "../../internal/business/sampleEntities/varValueParamVar1.xml"
+	fileVarValueParamVar2 = "../../internal/business/sampleEntities/varValueParamVar2.xml"
 )
 
 func TestAllDevices(t *testing.T) {
@@ -315,7 +320,7 @@ func TestVarInfo(t *testing.T) {
 		{
 			ps := powerStudioAPI.NewPowerStudio("localhost")
 
-			xmlFile, err := os.Open(varInfoParamVar1)
+			xmlFile, err := os.Open(fileVarInfoParamVar1)
 			require.NoError(t, err)
 
 			byteValue, err := io.ReadAll(xmlFile)
@@ -341,7 +346,7 @@ func TestVarInfo(t *testing.T) {
 		{
 			ps := powerStudioAPI.NewPowerStudio("localhost")
 
-			xmlFile, err := os.Open(varInfoParamVar2)
+			xmlFile, err := os.Open(fileVarInfoParamVar2)
 			require.NoError(t, err)
 
 			byteValue, err := io.ReadAll(xmlFile)
@@ -405,6 +410,187 @@ func TestVarInfo(t *testing.T) {
 			vars, err := ps.PsVarInfo(nil)
 
 			assert.Equal(t, 0, len(vars.Var))
+			assert.Error(t, err)
+		}
+	}
+}
+
+func TestVarValue(t *testing.T) {
+	t.Parallel()
+
+	t.Logf("Given the need to call VarValue method API.")
+	{
+		uri := "http://localhost/services/user/values.xml"
+
+		t.Logf("\tWhen a correct api call witch 0 parameters.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarValueParam0)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarValue(nil)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 0, len(vars.Variable))
+		}
+
+		t.Logf("\tWhen a correct api call witch 1 parameter type id")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarValueParamId1)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"id": "cvm-e3-mini"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarValue(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 657, len(vars.Variable))
+		}
+
+		t.Logf("\tWhen a correct api call witch 2 parameter type id")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarValueParamId2)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"id": "cvm-e3-mini"},
+				{"id": "TCPRS1-firmware"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarValue(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 2082, len(vars.Variable))
+		}
+
+		t.Logf("\tWhen a correct api call witch 1 parameter type var")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarValueParamVar1)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"var": "cvm-e3-mini.AE1"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarValue(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 1, len(vars.Variable))
+		}
+
+		t.Logf("\tWhen a correct api call witch 2 parameter type var")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			xmlFile, err := os.Open(fileVarValueParamVar2)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			parameters := []map[string]interface{}{
+				{"var": "cvm-e3-mini.AE1"},
+				{"var": "cvm-e3-mini.AE1B"},
+			}
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, parameters).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarValue(parameters)
+
+			assert.Nil(t, err)
+			assert.Equal(t, 2, len(vars.Variable))
+		}
+
+		t.Logf("\tWhen it fails because data unmarchal error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost")
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return([]byte(""), http.StatusOK, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarValue(nil)
+
+			assert.Error(t, err)
+			assert.Equal(t, 0, len(vars.Variable))
+		}
+
+		t.Logf("\tWhen it fails because power studio error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+
+			uri := "http://10.10.10.10/services/user/values.xml"
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return([]byte(""), http.StatusNotFound, nil)
+
+			ps.Request = mock
+
+			vars, err := ps.PsVarValue(nil)
+
+			assert.Equal(t, 0, len(vars.Variable))
+			assert.Equal(t, errors.ErrPowerStudioAPI, err)
+		}
+
+		t.Logf("\tWhen it fails because there is timeout.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+
+			vars, err := ps.PsVarValue(nil)
+
+			assert.Equal(t, 0, len(vars.Variable))
 			assert.Error(t, err)
 		}
 	}
