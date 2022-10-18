@@ -55,3 +55,15 @@ type VarInfo struct {
 		} `xml:"valueInfo"`
 	} `xml:"var"`
 }
+
+// Values identify  the main XML  as  a  response  to  the  request  for  value about variables.
+type Values struct {
+	XMLName  xml.Name `xml:"values"`
+	Text     string   `xml:",chardata"`
+	Variable []struct {
+		Text      string `xml:",chardata"`
+		ID        string `xml:"id"`
+		Value     string `xml:"value"`
+		TextValue string `xml:"textValue"`
+	} `xml:"variable"`
+}
