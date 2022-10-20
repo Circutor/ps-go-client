@@ -4,14 +4,19 @@ Library that contains calls to the PowerStudio API
 
 ## Index
 
-* [Instance library](#library)
+* [Installation](#installation)
+* [Example](#example)
 * [PsAllDevices](#PsAllDevices)
 * [PsDeviceInfo](#PsDeviceInfo)
 * [PsVarInfo](#PsVarInfo)
 * [PsVarValue](#PsVarValue)
 * [PsRecords](#PsRecords)
 
-## Instance library <a name="library"></a>
+## Installation <a name="installation"></a>
+
+     go get https://github.com/Circutor/ps-go-client
+
+## Example <a name="example"></a>
 
 ```go
 // ps methods. 
@@ -21,10 +26,7 @@ ps := powerStudioAPI.NewPowerStudio("localhost")
 devices, err := ps.PsAllDevices()
 
 // get device info.
-devicesInfo, err := ps.PsDeviceInfo([]map[string]interface{}{
-    {"id", "deviceName1"}
-    {"id", "deviceNameN"}
-})
+devicesInfo, err := ps.PsDeviceInfo([]{"deviceName1", "...", "deviceNameN"})
 
 // get description var from device id.
 varsInfo, err := ps.PsVarInfo([]map[string]interface{}{

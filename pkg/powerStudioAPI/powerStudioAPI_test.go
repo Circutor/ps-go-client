@@ -127,7 +127,7 @@ func TestDeviceInfo(t *testing.T) {
 			require.NoError(t, err)
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return(byteValue, http.StatusOK, nil)
 
 			ps.Request = mock
@@ -158,7 +158,7 @@ func TestDeviceInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			devices, err := ps.PsDeviceInfo(parameters)
+			devices, err := ps.PsDeviceInfo([]string{"cvm-e3-mini"})
 
 			assert.Nil(t, err)
 			assert.GreaterOrEqual(t, len(devices.Device), 1)
@@ -185,7 +185,7 @@ func TestDeviceInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			devices, err := ps.PsDeviceInfo(parameters)
+			devices, err := ps.PsDeviceInfo([]string{"cvm-e3-mini", "TCPRS1-firmware"})
 
 			assert.Nil(t, err)
 			assert.GreaterOrEqual(t, len(devices.Device), 2)
@@ -196,7 +196,7 @@ func TestDeviceInfo(t *testing.T) {
 			ps := powerStudioAPI.NewPowerStudio("localhost")
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusOK, nil)
 
 			ps.Request = mock
@@ -214,7 +214,7 @@ func TestDeviceInfo(t *testing.T) {
 			uri := "http://10.10.10.10/services/user/deviceInfo.xml"
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusNotFound, nil)
 
 			ps.Request = mock

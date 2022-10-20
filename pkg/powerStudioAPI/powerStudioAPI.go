@@ -6,19 +6,19 @@ import (
 	"github.com/circutor/ps-go-client/internal/business/model"
 	"github.com/circutor/ps-go-client/internal/business/sys/data"
 	"github.com/circutor/ps-go-client/internal/business/sys/errors"
-	httprequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
+	httpRequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
 	"github.com/circutor/ps-go-client/internal/business/sys/powerStudio"
 )
 
 // PowerStudio methods power studio API.
 type PowerStudio struct {
-	Request httprequest.Request
+	Request httpRequest.Request
 	Host    string
 }
 
 // NewPowerStudio creates a new PowerStudioAPI interface.
 func NewPowerStudio(host string) PowerStudio {
-	request := httprequest.NewHTTPRequest()
+	request := httpRequest.NewHTTPRequest()
 
 	return PowerStudio{
 		Request: &request,
@@ -29,7 +29,7 @@ func NewPowerStudio(host string) PowerStudio {
 // PowerStudioAPI contains methods power studio API.
 type PowerStudioAPI interface {
 	PsAllDevices() (*model.Devices, error)
-	PsDeviceInfo(parameters []map[string]interface{}) (*model.DevicesInfo, error)
+	PsDeviceInfo(ids []string) (*model.DevicesInfo, error)
 	PsVarInfo(parameters []map[string]interface{}) (*model.VarInfo, error)
 	PsVarValue(parameters []map[string]interface{}) (*model.Values, error)
 	PsRecords(begin, end string, period int, parameters []map[string]interface{}) (*model.RecordGroup, error)
@@ -57,8 +57,13 @@ func (ps *PowerStudio) PsAllDevices() (*model.Devices, error) {
 }
 
 // PsDeviceInfo get a devices information from power studio.
-func (ps *PowerStudio) PsDeviceInfo(parameters []map[string]interface{}) (*model.DevicesInfo, error) {
+func (ps *PowerStudio) PsDeviceInfo(ids []string) (*model.DevicesInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIDevicesInfo
+
+	parameters := make([]map[string]interface{}, 0)
+	for _, id := range ids {
+		parameters = append(parameters, map[string]interface{}{"id": id})
+	}
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
