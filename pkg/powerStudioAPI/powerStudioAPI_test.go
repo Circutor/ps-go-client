@@ -127,7 +127,7 @@ func TestDeviceInfo(t *testing.T) {
 			require.NoError(t, err)
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return(byteValue, http.StatusOK, nil)
 
 			ps.Request = mock
@@ -158,7 +158,7 @@ func TestDeviceInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			devices, err := ps.PsDeviceInfo(parameters)
+			devices, err := ps.PsDeviceInfo([]string{"cvm-e3-mini"})
 
 			assert.Nil(t, err)
 			assert.GreaterOrEqual(t, len(devices.Device), 1)
@@ -185,7 +185,7 @@ func TestDeviceInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			devices, err := ps.PsDeviceInfo(parameters)
+			devices, err := ps.PsDeviceInfo([]string{"cvm-e3-mini", "TCPRS1-firmware"})
 
 			assert.Nil(t, err)
 			assert.GreaterOrEqual(t, len(devices.Device), 2)
@@ -196,7 +196,7 @@ func TestDeviceInfo(t *testing.T) {
 			ps := powerStudioAPI.NewPowerStudio("localhost")
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusOK, nil)
 
 			ps.Request = mock
@@ -214,7 +214,7 @@ func TestDeviceInfo(t *testing.T) {
 			uri := "http://10.10.10.10/services/user/deviceInfo.xml"
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusNotFound, nil)
 
 			ps.Request = mock
@@ -255,12 +255,12 @@ func TestVarInfo(t *testing.T) {
 			require.NoError(t, err)
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return(byteValue, http.StatusOK, nil)
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarInfo(nil)
+			vars, err := ps.PsVarInfo(nil, nil)
 
 			assert.Nil(t, err)
 			assert.Equal(t, 0, len(vars.Var))
@@ -286,7 +286,7 @@ func TestVarInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarInfo(parameters)
+			vars, err := ps.PsVarInfo([]string{"cvm-e3-mini"}, nil)
 
 			assert.Nil(t, err)
 			assert.Equal(t, 657, len(vars.Var))
@@ -313,7 +313,7 @@ func TestVarInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarInfo(parameters)
+			vars, err := ps.PsVarInfo([]string{"cvm-e3-mini", "TCPRS1-firmware"}, nil)
 
 			assert.Nil(t, err)
 			assert.Equal(t, 2082, len(vars.Var))
@@ -339,7 +339,7 @@ func TestVarInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarInfo(parameters)
+			vars, err := ps.PsVarInfo(nil, []string{"cvm-e3-mini.AE1"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 1, len(vars.Var))
@@ -366,7 +366,7 @@ func TestVarInfo(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarInfo(parameters)
+			vars, err := ps.PsVarInfo(nil, []string{"cvm-e3-mini.AE1", "cvm-e3-mini.AE1B"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 2, len(vars.Var))
@@ -377,12 +377,12 @@ func TestVarInfo(t *testing.T) {
 			ps := powerStudioAPI.NewPowerStudio("localhost")
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusOK, nil)
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarInfo(nil)
+			vars, err := ps.PsVarInfo(nil, nil)
 
 			assert.Error(t, err)
 			assert.Equal(t, 0, len(vars.Var))
@@ -395,12 +395,12 @@ func TestVarInfo(t *testing.T) {
 			uri := "http://10.10.10.10/services/user/varInfo.xml"
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusNotFound, nil)
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarInfo(nil)
+			vars, err := ps.PsVarInfo(nil, nil)
 
 			assert.Equal(t, 0, len(vars.Var))
 			assert.Equal(t, errors.ErrPowerStudioAPI, err)
@@ -410,7 +410,7 @@ func TestVarInfo(t *testing.T) {
 		{
 			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
 
-			vars, err := ps.PsVarInfo(nil)
+			vars, err := ps.PsVarInfo(nil, nil)
 
 			assert.Equal(t, 0, len(vars.Var))
 			assert.Error(t, err)
@@ -436,12 +436,12 @@ func TestVarValue(t *testing.T) {
 			require.NoError(t, err)
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return(byteValue, http.StatusOK, nil)
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarValue(nil)
+			vars, err := ps.PsVarValue(nil, nil)
 
 			assert.Nil(t, err)
 			assert.Equal(t, 0, len(vars.Variable))
@@ -467,7 +467,7 @@ func TestVarValue(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarValue(parameters)
+			vars, err := ps.PsVarValue([]string{"cvm-e3-mini"}, nil)
 
 			assert.Nil(t, err)
 			assert.Equal(t, 657, len(vars.Variable))
@@ -494,7 +494,7 @@ func TestVarValue(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarValue(parameters)
+			vars, err := ps.PsVarValue([]string{"cvm-e3-mini", "TCPRS1-firmware"}, nil)
 
 			assert.Nil(t, err)
 			assert.Equal(t, 2082, len(vars.Variable))
@@ -520,7 +520,7 @@ func TestVarValue(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarValue(parameters)
+			vars, err := ps.PsVarValue(nil, []string{"cvm-e3-mini.AE1"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 1, len(vars.Variable))
@@ -547,7 +547,7 @@ func TestVarValue(t *testing.T) {
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarValue(parameters)
+			vars, err := ps.PsVarValue(nil, []string{"cvm-e3-mini.AE1", "cvm-e3-mini.AE1B"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 2, len(vars.Variable))
@@ -558,12 +558,12 @@ func TestVarValue(t *testing.T) {
 			ps := powerStudioAPI.NewPowerStudio("localhost")
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusOK, nil)
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarValue(nil)
+			vars, err := ps.PsVarValue(nil, nil)
 
 			assert.Error(t, err)
 			assert.Equal(t, 0, len(vars.Variable))
@@ -576,12 +576,12 @@ func TestVarValue(t *testing.T) {
 			uri := "http://10.10.10.10/services/user/values.xml"
 
 			mock := new(mocks.RequestMock)
-			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
 				Return([]byte(""), http.StatusNotFound, nil)
 
 			ps.Request = mock
 
-			vars, err := ps.PsVarValue(nil)
+			vars, err := ps.PsVarValue(nil, nil)
 
 			assert.Equal(t, 0, len(vars.Variable))
 			assert.Equal(t, errors.ErrPowerStudioAPI, err)
@@ -591,7 +591,7 @@ func TestVarValue(t *testing.T) {
 		{
 			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
 
-			vars, err := ps.PsVarValue(nil)
+			vars, err := ps.PsVarValue(nil, nil)
 
 			assert.Equal(t, 0, len(vars.Variable))
 			assert.Error(t, err)
@@ -655,9 +655,7 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 0, []map[string]interface{}{
-				{"var": "CVM-C5.VMX23"},
-			})
+			records, err := ps.PsRecords("18102022", "18102022", 0, []string{"CVM-C5.VMX23"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 40, len(records.Record))
@@ -687,10 +685,7 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 10, []map[string]interface{}{
-				{"var": "CVM-C5.VMX23"},
-				{"var": "CVM-C5.AET1"},
-			})
+			records, err := ps.PsRecords("18102022", "18102022", 10, []string{"CVM-C5.VMX23", "CVM-C5.AET1"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 40, len(records.Record))

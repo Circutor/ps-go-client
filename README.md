@@ -4,14 +4,19 @@ Library that contains calls to the PowerStudio API
 
 ## Index
 
-* [Instance library](#library)
+* [Installation](#installation)
+* [Example](#example)
 * [PsAllDevices](#PsAllDevices)
 * [PsDeviceInfo](#PsDeviceInfo)
 * [PsVarInfo](#PsVarInfo)
 * [PsVarValue](#PsVarValue)
 * [PsRecords](#PsRecords)
 
-## Instance library <a name="library"></a>
+## Installation <a name="installation"></a>
+
+     go get https://github.com/Circutor/ps-go-client
+
+## Example <a name="example"></a>
 
 ```go
 // ps methods. 
@@ -21,40 +26,16 @@ ps := powerStudioAPI.NewPowerStudio("localhost")
 devices, err := ps.PsAllDevices()
 
 // get device info.
-devicesInfo, err := ps.PsDeviceInfo([]map[string]interface{}{
-    {"id", "deviceName1"}
-    {"id", "deviceNameN"}
-})
+devicesInfo, err := ps.PsDeviceInfo([]string{"deviceName1", "deviceNameN"})
 
-// get description var from device id.
-varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
-    {"id", "deviceName1"}
-    {"id", "deviceNameN"}
-})
+// get description var from device id or var name.
+varsInfo, err := ps.PsVarInfo([]string{"deviceName1", "deviceNameN"}, []string{"varName1", "varNameN"})
 
-// get description var from var name.
-varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
-    {"var", "varName1"}
-    {"var", "varNameN"}
-})
-
-// get value var from device id.
-varsValue, err := ps.PsVarValue([]map[string]interface{}{
-    {"id", "deviceName1"}
-    {"id", "deviceNameN"}
-})
-
-// get value var from var name.
-varsValue, err := ps.PsVarValue([]map[string]interface{}{
-    {"var", "varName1"}
-    {"var", "varNameN"}
-})
+// get value var from device id or var name.
+varsValue, err := ps.PsVarValue([]string{"deviceName1", "deviceNameN"}, []string{"varName1", "varNameN"})
 
 // get value records var name.
-records, err := PsRecords("18102022", "18102022", 0,[]map[string]interface{}{
-    {"var", "varName1"}
-    {"var", "varNameN"}
-})
+records, err := PsRecords("18102022", "18102022", 0, []string{"varName1", "varNameN"})
 ```
 
 ## Method `PsAllDevices()` <a name="PsAllDevices"></a>
