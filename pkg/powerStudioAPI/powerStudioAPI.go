@@ -6,19 +6,19 @@ import (
 	"github.com/circutor/ps-go-client/internal/business/model"
 	"github.com/circutor/ps-go-client/internal/business/sys/data"
 	"github.com/circutor/ps-go-client/internal/business/sys/errors"
-	httprequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
+	httpRequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
 	"github.com/circutor/ps-go-client/internal/business/sys/powerStudio"
 )
 
 // PowerStudio methods power studio API.
 type PowerStudio struct {
-	Request httprequest.Request
+	Request httpRequest.Request
 	Host    string
 }
 
 // NewPowerStudio creates a new PowerStudioAPI interface.
 func NewPowerStudio(host string) PowerStudio {
-	request := httprequest.NewHTTPRequest()
+	request := httpRequest.NewHTTPRequest()
 
 	return PowerStudio{
 		Request: &request,
@@ -29,10 +29,10 @@ func NewPowerStudio(host string) PowerStudio {
 // PowerStudioAPI contains methods power studio API.
 type PowerStudioAPI interface {
 	PsAllDevices() (*model.Devices, error)
-	PsDeviceInfo(parameters []map[string]interface{}) (*model.DevicesInfo, error)
-	PsVarInfo(parameters []map[string]interface{}) (*model.VarInfo, error)
-	PsVarValue(parameters []map[string]interface{}) (*model.Values, error)
-	PsRecords(begin, end string, period int, parameters []map[string]interface{}) (*model.RecordGroup, error)
+	PsDeviceInfo(ids []string) (*model.DevicesInfo, error)
+	PsVarInfo(ids, vars []string) (*model.VarInfo, error)
+	PsVarValue(ids, vars []string) (*model.Values, error)
+	PsRecords(begin, end string, period int, vars []string) (*model.RecordGroup, error)
 }
 
 // PsAllDevices get all devices from power studio.
@@ -57,8 +57,10 @@ func (ps *PowerStudio) PsAllDevices() (*model.Devices, error) {
 }
 
 // PsDeviceInfo get a devices information from power studio.
-func (ps *PowerStudio) PsDeviceInfo(parameters []map[string]interface{}) (*model.DevicesInfo, error) {
+func (ps *PowerStudio) PsDeviceInfo(ids []string) (*model.DevicesInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIDevicesInfo
+
+	parameters := powerstudio.ParseParameters(ids, nil)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
@@ -82,8 +84,10 @@ func (ps *PowerStudio) PsDeviceInfo(parameters []map[string]interface{}) (*model
 // If parameter content `ids` return all variables from device.
 //
 // If parameter content `vars` return variables from the device it belongs to.
-func (ps *PowerStudio) PsVarInfo(parameters []map[string]interface{}) (*model.VarInfo, error) {
+func (ps *PowerStudio) PsVarInfo(ids, vars []string) (*model.VarInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarInfo
+
+	parameters := powerstudio.ParseParameters(ids, vars)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
@@ -107,8 +111,10 @@ func (ps *PowerStudio) PsVarInfo(parameters []map[string]interface{}) (*model.Va
 // If parameter content `ids` return all values of variables from device.
 //
 // If parameter content `vars` return  value of variables from the device it belongs to.
-func (ps *PowerStudio) PsVarValue(parameters []map[string]interface{}) (*model.Values, error) {
+func (ps *PowerStudio) PsVarValue(ids, vars []string) (*model.Values, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarValue
+
+	parameters := powerstudio.ParseParameters(ids, vars)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
@@ -128,9 +134,10 @@ func (ps *PowerStudio) PsVarValue(parameters []map[string]interface{}) (*model.V
 }
 
 // PsRecords get a records values from power studio.
-func (ps *PowerStudio) PsRecords(begin, end string, period int, parameters []map[string]interface{},
-) (*model.RecordGroup, error) {
+func (ps *PowerStudio) PsRecords(begin, end string, period int, vars []string) (*model.RecordGroup, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIRecord
+
+	parameters := powerstudio.ParseParameters(nil, vars)
 
 	if begin == "" || end == "" {
 		return &model.RecordGroup{}, errors.ErrPowerStudioParameters
