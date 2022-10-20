@@ -60,10 +60,7 @@ func (ps *PowerStudio) PsAllDevices() (*model.Devices, error) {
 func (ps *PowerStudio) PsDeviceInfo(ids []string) (*model.DevicesInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIDevicesInfo
 
-	parameters := make([]map[string]interface{}, 0)
-	for _, id := range ids {
-		parameters = append(parameters, map[string]interface{}{"id": id})
-	}
+	parameters := powerstudio.ParseParameters(ids, nil)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
@@ -90,14 +87,7 @@ func (ps *PowerStudio) PsDeviceInfo(ids []string) (*model.DevicesInfo, error) {
 func (ps *PowerStudio) PsVarInfo(ids, vars []string) (*model.VarInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarInfo
 
-	parameters := make([]map[string]interface{}, 0)
-	for _, id := range ids {
-		parameters = append(parameters, map[string]interface{}{"id": id})
-	}
-
-	for _, variable := range vars {
-		parameters = append(parameters, map[string]interface{}{"var": variable})
-	}
+	parameters := powerstudio.ParseParameters(ids, vars)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
@@ -124,14 +114,7 @@ func (ps *PowerStudio) PsVarInfo(ids, vars []string) (*model.VarInfo, error) {
 func (ps *PowerStudio) PsVarValue(ids, vars []string) (*model.Values, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarValue
 
-	parameters := make([]map[string]interface{}, 0)
-	for _, id := range ids {
-		parameters = append(parameters, map[string]interface{}{"id": id})
-	}
-
-	for _, variable := range vars {
-		parameters = append(parameters, map[string]interface{}{"var": variable})
-	}
+	parameters := powerstudio.ParseParameters(ids, vars)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
@@ -154,10 +137,7 @@ func (ps *PowerStudio) PsVarValue(ids, vars []string) (*model.Values, error) {
 func (ps *PowerStudio) PsRecords(begin, end string, period int, vars []string) (*model.RecordGroup, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIRecord
 
-	parameters := make([]map[string]interface{}, 0)
-	for _, variable := range vars {
-		parameters = append(parameters, map[string]interface{}{"var": variable})
-	}
+	parameters := powerstudio.ParseParameters(nil, vars)
 
 	if begin == "" || end == "" {
 		return &model.RecordGroup{}, errors.ErrPowerStudioParameters
