@@ -28,17 +28,8 @@ devices, err := ps.PsAllDevices()
 // get device info.
 devicesInfo, err := ps.PsDeviceInfo([]{"deviceName1", "...", "deviceNameN"})
 
-// get description var from device id.
-varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
-    {"id", "deviceName1"}
-    {"id", "deviceNameN"}
-})
-
-// get description var from var name.
-varsInfo, err := ps.PsVarInfo([]map[string]interface{}{
-    {"var", "varName1"}
-    {"var", "varNameN"}
-})
+// get description var from device id or var name.
+varsInfo, err := ps.PsVarInfo([]{"deviceName1", "...", "deviceNameN"}, []{"varName1", "...", "varNameN"})
 
 // get value var from device id.
 varsValue, err := ps.PsVarValue([]map[string]interface{}{
