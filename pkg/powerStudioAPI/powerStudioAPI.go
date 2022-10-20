@@ -31,7 +31,7 @@ type PowerStudioAPI interface {
 	PsAllDevices() (*model.Devices, error)
 	PsDeviceInfo(ids []string) (*model.DevicesInfo, error)
 	PsVarInfo(ids, vars []string) (*model.VarInfo, error)
-	PsVarValue(parameters []map[string]interface{}) (*model.Values, error)
+	PsVarValue(ids, vars []string) (*model.Values, error)
 	PsRecords(begin, end string, period int, parameters []map[string]interface{}) (*model.RecordGroup, error)
 }
 
@@ -121,8 +121,17 @@ func (ps *PowerStudio) PsVarInfo(ids, vars []string) (*model.VarInfo, error) {
 // If parameter content `ids` return all values of variables from device.
 //
 // If parameter content `vars` return  value of variables from the device it belongs to.
-func (ps *PowerStudio) PsVarValue(parameters []map[string]interface{}) (*model.Values, error) {
+func (ps *PowerStudio) PsVarValue(ids, vars []string) (*model.Values, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarValue
+
+	parameters := make([]map[string]interface{}, 0)
+	for _, id := range ids {
+		parameters = append(parameters, map[string]interface{}{"id": id})
+	}
+
+	for _, variable := range vars {
+		parameters = append(parameters, map[string]interface{}{"var": variable})
+	}
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {

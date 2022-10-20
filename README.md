@@ -31,17 +31,8 @@ devicesInfo, err := ps.PsDeviceInfo([]{"deviceName1", "...", "deviceNameN"})
 // get description var from device id or var name.
 varsInfo, err := ps.PsVarInfo([]{"deviceName1", "...", "deviceNameN"}, []{"varName1", "...", "varNameN"})
 
-// get value var from device id.
-varsValue, err := ps.PsVarValue([]map[string]interface{}{
-    {"id", "deviceName1"}
-    {"id", "deviceNameN"}
-})
-
-// get value var from var name.
-varsValue, err := ps.PsVarValue([]map[string]interface{}{
-    {"var", "varName1"}
-    {"var", "varNameN"}
-})
+// get value var from device id or var name.
+varsValue, err := ps.PsVarValue([]{"deviceName1", "...", "deviceNameN"}, []{"varName1", "...", "varNameN"})
 
 // get value records var name.
 records, err := PsRecords("18102022", "18102022", 0,[]map[string]interface{}{
