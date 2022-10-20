@@ -26,19 +26,16 @@ ps := powerStudioAPI.NewPowerStudio("localhost")
 devices, err := ps.PsAllDevices()
 
 // get device info.
-devicesInfo, err := ps.PsDeviceInfo([]{"deviceName1", "...", "deviceNameN"})
+devicesInfo, err := ps.PsDeviceInfo([]string{"deviceName1", "deviceNameN"})
 
 // get description var from device id or var name.
-varsInfo, err := ps.PsVarInfo([]{"deviceName1", "...", "deviceNameN"}, []{"varName1", "...", "varNameN"})
+varsInfo, err := ps.PsVarInfo([]string{"deviceName1", "deviceNameN"}, []string{"varName1", "varNameN"})
 
 // get value var from device id or var name.
-varsValue, err := ps.PsVarValue([]{"deviceName1", "...", "deviceNameN"}, []{"varName1", "...", "varNameN"})
+varsValue, err := ps.PsVarValue([]string{"deviceName1", "deviceNameN"}, []string{"varName1", "varNameN"})
 
 // get value records var name.
-records, err := PsRecords("18102022", "18102022", 0,[]map[string]interface{}{
-    {"var", "varName1"}
-    {"var", "varNameN"}
-})
+records, err := PsRecords("18102022", "18102022", 0, []string{"varName1", "varNameN"})
 ```
 
 ## Method `PsAllDevices()` <a name="PsAllDevices"></a>

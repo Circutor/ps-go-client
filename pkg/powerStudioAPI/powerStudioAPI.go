@@ -32,7 +32,7 @@ type PowerStudioAPI interface {
 	PsDeviceInfo(ids []string) (*model.DevicesInfo, error)
 	PsVarInfo(ids, vars []string) (*model.VarInfo, error)
 	PsVarValue(ids, vars []string) (*model.Values, error)
-	PsRecords(begin, end string, period int, parameters []map[string]interface{}) (*model.RecordGroup, error)
+	PsRecords(begin, end string, period int, vars []string) (*model.RecordGroup, error)
 }
 
 // PsAllDevices get all devices from power studio.
@@ -151,9 +151,13 @@ func (ps *PowerStudio) PsVarValue(ids, vars []string) (*model.Values, error) {
 }
 
 // PsRecords get a records values from power studio.
-func (ps *PowerStudio) PsRecords(begin, end string, period int, parameters []map[string]interface{},
-) (*model.RecordGroup, error) {
+func (ps *PowerStudio) PsRecords(begin, end string, period int, vars []string) (*model.RecordGroup, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIRecord
+
+	parameters := make([]map[string]interface{}, 0)
+	for _, variable := range vars {
+		parameters = append(parameters, map[string]interface{}{"var": variable})
+	}
 
 	if begin == "" || end == "" {
 		return &model.RecordGroup{}, errors.ErrPowerStudioParameters

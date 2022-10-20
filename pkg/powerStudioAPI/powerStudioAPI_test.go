@@ -655,9 +655,7 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 0, []map[string]interface{}{
-				{"var": "CVM-C5.VMX23"},
-			})
+			records, err := ps.PsRecords("18102022", "18102022", 0, []string{"CVM-C5.VMX23"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 40, len(records.Record))
@@ -687,10 +685,7 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 10, []map[string]interface{}{
-				{"var": "CVM-C5.VMX23"},
-				{"var": "CVM-C5.AET1"},
-			})
+			records, err := ps.PsRecords("18102022", "18102022", 10, []string{"CVM-C5.VMX23", "CVM-C5.AET1"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 40, len(records.Record))
