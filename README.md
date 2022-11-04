@@ -20,7 +20,7 @@ Library that contains calls to the PowerStudio API
 
 ```go
 // ps methods. 
-ps := powerStudioAPI.NewPowerStudio("localhost")
+ps := powerStudioAPI.NewPowerStudio("localhost", "username", "password")
 
 // get list of devices.
 devices, err := ps.PsAllDevices()
