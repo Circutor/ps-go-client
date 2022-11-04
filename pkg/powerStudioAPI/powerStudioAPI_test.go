@@ -43,7 +43,7 @@ func TestAllDevices(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileAllDevices)
 			require.NoError(t, err)
@@ -65,7 +65,7 @@ func TestAllDevices(t *testing.T) {
 
 		t.Logf("\tWhen it fails because data unmarchal error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			mock := new(mocks.RequestMock)
 			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
@@ -81,7 +81,7 @@ func TestAllDevices(t *testing.T) {
 
 		t.Logf("\tWhen it fails because power studio error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			uri := "http://10.10.10.10/services/user/devices.xml"
 
@@ -99,7 +99,7 @@ func TestAllDevices(t *testing.T) {
 
 		t.Logf("\tWhen it fails because there is timeout.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			devices, err := ps.PsAllDevices()
 
@@ -118,7 +118,7 @@ func TestDeviceInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 0 parameters.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileDevicesInfoParam0)
 			require.NoError(t, err)
@@ -140,7 +140,7 @@ func TestDeviceInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 1 parameters.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileDevicesInfoParam1)
 			require.NoError(t, err)
@@ -166,7 +166,7 @@ func TestDeviceInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 2 parameters.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileDevicesInfoParam2)
 			require.NoError(t, err)
@@ -193,7 +193,7 @@ func TestDeviceInfo(t *testing.T) {
 
 		t.Logf("\tWhen it fails because data unmarchal error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			mock := new(mocks.RequestMock)
 			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
@@ -209,7 +209,7 @@ func TestDeviceInfo(t *testing.T) {
 
 		t.Logf("\tWhen it fails because power studio error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			uri := "http://10.10.10.10/services/user/deviceInfo.xml"
 
@@ -227,7 +227,7 @@ func TestDeviceInfo(t *testing.T) {
 
 		t.Logf("\tWhen it fails because there is timeout.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			devices, err := ps.PsDeviceInfo(nil)
 
@@ -246,7 +246,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 0 parameters.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarInfoParam0)
 			require.NoError(t, err)
@@ -268,7 +268,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 1 parameter type id")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarInfoParamId1)
 			require.NoError(t, err)
@@ -294,7 +294,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 2 parameter type id")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarInfoParamId2)
 			require.NoError(t, err)
@@ -321,7 +321,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 1 parameter type var")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarInfoParamVar1)
 			require.NoError(t, err)
@@ -347,7 +347,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 2 parameter type var")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarInfoParamVar2)
 			require.NoError(t, err)
@@ -374,7 +374,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen it fails because data unmarchal error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			mock := new(mocks.RequestMock)
 			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
@@ -390,7 +390,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen it fails because power studio error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			uri := "http://10.10.10.10/services/user/varInfo.xml"
 
@@ -408,7 +408,7 @@ func TestVarInfo(t *testing.T) {
 
 		t.Logf("\tWhen it fails because there is timeout.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			vars, err := ps.PsVarInfo(nil, nil)
 
@@ -427,7 +427,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 0 parameters.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarValueParam0)
 			require.NoError(t, err)
@@ -449,7 +449,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 1 parameter type id")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarValueParamId1)
 			require.NoError(t, err)
@@ -475,7 +475,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 2 parameter type id")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarValueParamId2)
 			require.NoError(t, err)
@@ -502,7 +502,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 1 parameter type var")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarValueParamVar1)
 			require.NoError(t, err)
@@ -528,7 +528,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 2 parameter type var")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileVarValueParamVar2)
 			require.NoError(t, err)
@@ -555,7 +555,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen it fails because data unmarchal error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			mock := new(mocks.RequestMock)
 			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}{}).
@@ -571,7 +571,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen it fails because power studio error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			uri := "http://10.10.10.10/services/user/values.xml"
 
@@ -589,7 +589,7 @@ func TestVarValue(t *testing.T) {
 
 		t.Logf("\tWhen it fails because there is timeout.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			vars, err := ps.PsVarValue(nil, nil)
 
@@ -608,7 +608,7 @@ func TestRecords(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 0 parameters type var.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileRecordsParamVar0)
 			require.NoError(t, err)
@@ -635,7 +635,7 @@ func TestRecords(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 1 parameters type var.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileRecordsParamVar1)
 			require.NoError(t, err)
@@ -663,7 +663,7 @@ func TestRecords(t *testing.T) {
 
 		t.Logf("\tWhen a correct api call witch 2 parameters type var.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			xmlFile, err := os.Open(fileRecordsParamVar2)
 			require.NoError(t, err)
@@ -693,7 +693,7 @@ func TestRecords(t *testing.T) {
 
 		t.Logf("\tWhen it fails because data unmarchal error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			parameter := []map[string]interface{}{
 				{"begin": "18102022"},
@@ -714,7 +714,7 @@ func TestRecords(t *testing.T) {
 
 		t.Logf("\tWhen it fails because power studio error.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			uri := "http://10.10.10.10/services/user/records.xml"
 
@@ -737,7 +737,7 @@ func TestRecords(t *testing.T) {
 
 		t.Logf("\tWhen it fails because there is timeout.")
 		{
-			ps := powerStudioAPI.NewPowerStudio("10.10.10.10")
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
 			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
 
@@ -747,7 +747,7 @@ func TestRecords(t *testing.T) {
 
 		t.Logf("\tWhen it fails because there is parameters .")
 		{
-			ps := powerStudioAPI.NewPowerStudio("localhost")
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
 			records, err := ps.PsRecords("18102022", "", 0, nil)
 

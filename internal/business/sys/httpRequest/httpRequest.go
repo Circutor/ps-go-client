@@ -16,11 +16,17 @@ type Request interface {
 
 //go:generate mockery --name Request --structname RequestMock --filename RequestMock.go
 
-type HTTPRequest struct{}
+type HTTPRequest struct {
+	Username string
+	Password string
+}
 
 // NewHTTPRequest creates a new NewRequest interface.
-func NewHTTPRequest() HTTPRequest {
-	return HTTPRequest{}
+func NewHTTPRequest(username, password string) HTTPRequest {
+	return HTTPRequest{
+		Username: username,
+		Password: password,
+	}
 }
 
 // addQueryParameters method aggregate queries in to the request.
@@ -37,8 +43,8 @@ func addQueryParameters(req *http.Request, queryParameters []map[string]interfac
 }
 
 // Method to make the request and return the response.
-func makeRequest(req *http.Request) (*http.Response, error) {
-	client := config.CreateHTTPClient()
+func makeRequest(req *http.Request, username, password string) (*http.Response, error) {
+	client := config.CreateHTTPClient(username, password)
 
 	resp, err := client.Do(req)
 	if err != nil {

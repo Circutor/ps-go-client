@@ -24,7 +24,7 @@ func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
 		addQueryParameters(req, query)
 	}
 
-	resp, err := makeRequest(req)
+	resp, err := makeRequest(req, r.Username, r.Password)
 	if err != nil {
 		return nil, http.StatusInternalServerError, fmt.Errorf("%w", err)
 	}
