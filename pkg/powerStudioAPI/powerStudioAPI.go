@@ -12,17 +12,21 @@ import (
 
 // PowerStudio methods power studio API.
 type PowerStudio struct {
-	Request httpRequest.Request
-	Host    string
+	Request  httpRequest.Request
+	Host     string
+	Username string
+	Password string
 }
 
 // NewPowerStudio creates a new PowerStudioAPI interface.
-func NewPowerStudio(host string) PowerStudio {
-	request := httpRequest.NewHTTPRequest()
+func NewPowerStudio(host, username, password string) PowerStudio {
+	request := httpRequest.NewHTTPRequest(username, password)
 
 	return PowerStudio{
-		Request: &request,
-		Host:    host,
+		Request:  &request,
+		Host:     host,
+		Username: username,
+		Password: password,
 	}
 }
 

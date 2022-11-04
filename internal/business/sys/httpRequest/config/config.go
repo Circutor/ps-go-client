@@ -6,6 +6,7 @@ import (
 	"net/http/cookiejar"
 	"time"
 
+	"github.com/icholy/digest"
 	"golang.org/x/net/publicsuffix"
 )
 
@@ -17,12 +18,16 @@ type customTransport struct {
 }
 
 // CreateHTTPClient created Http client configuration.
-func CreateHTTPClient() http.Client {
+func CreateHTTPClient(username, password string) http.Client {
 	client := http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error { return http.ErrUseLastResponse },
 		Timeout:       timeout * time.Second,
 		Transport:     newTransport(http.DefaultTransport.(*http.Transport)),
 		Jar:           newJar(),
+	}
+
+	if username != "" || password != "" {
+		client.Transport = &digest.Transport{Username: username, Password: password}
 	}
 
 	return client
