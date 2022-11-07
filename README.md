@@ -23,6 +23,12 @@ Library that contains calls to the PowerStudio API
 // ps methods. 
 ps := powerStudioAPI.NewPowerStudio("localhost", "username", "password")
 
+// If the ps does not have authentication, the username and password values will be empty
+ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
+
+// If the tps is in another address, the address will be like this
+ps := powerStudioAPI.NewPowerStudio("hostURL", "", "")
+
 // get list of devices.
 devices, err := ps.PsAllDevices()
 
@@ -39,7 +45,10 @@ varsInfo, err := ps.PsVarInfo([]string{"deviceName1", "deviceNameN"}, []string{"
 varsValue, err := ps.PsVarValue([]string{"deviceName1", "deviceNameN"}, []string{"varName1", "varNameN"})
 
 // get value records var name.
-records, err := PsRecords("18102022", "18102022", 0, []string{"varName1", "varNameN"})
+timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+timeEnd := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+
+records, err := PsRecords(timeBegin, timeEnd, 0, []string{"varName1", "varNameN"})
 ```
 
 ## Method `PsAllDevices()` <a name="PsAllDevices"></a>
@@ -251,7 +260,7 @@ Returns variable value.
     }
   ```
 
-## Method `PsRecords(begin, end string, period int, parameters []map[string]interface{}` <a name="PsRecords"></a>
+## Method `PsRecords(begin, end time.time, period int, parameters []map[string]interface{}` <a name="PsRecords"></a>
 
 Returns records value.
 
