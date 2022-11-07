@@ -14,24 +14,25 @@ import (
 )
 
 const (
-	methodMock            = "NewRequest"
-	fileAllDevices        = "../../internal/business/sampleEntities/allDevices.xml"
-	fileDevicesInfoParam0 = "../../internal/business/sampleEntities/deviceInfoParam0.xml"
-	fileDevicesInfoParam1 = "../../internal/business/sampleEntities/deviceInfoParam1.xml"
-	fileDevicesInfoParam2 = "../../internal/business/sampleEntities/deviceInfoParam2.xml"
-	fileVarInfoParam0     = "../../internal/business/sampleEntities/varInfoParam0.xml"
-	fileVarInfoParamId1   = "../../internal/business/sampleEntities/varInfoParamId1.xml"
-	fileVarInfoParamId2   = "../../internal/business/sampleEntities/varInfoParamId2.xml"
-	fileVarInfoParamVar1  = "../../internal/business/sampleEntities/varInfoParamVar1.xml"
-	fileVarInfoParamVar2  = "../../internal/business/sampleEntities/varInfoParamVar2.xml"
-	fileVarValueParam0    = "../../internal/business/sampleEntities/varValueParam0.xml"
-	fileVarValueParamId1  = "../../internal/business/sampleEntities/varValueParamId1.xml"
-	fileVarValueParamId2  = "../../internal/business/sampleEntities/varValueParamId2.xml"
-	fileVarValueParamVar1 = "../../internal/business/sampleEntities/varValueParamVar1.xml"
-	fileVarValueParamVar2 = "../../internal/business/sampleEntities/varValueParamVar2.xml"
-	fileRecordsParamVar0  = "../../internal/business/sampleEntities/recordsParamVar0.xml"
-	fileRecordsParamVar1  = "../../internal/business/sampleEntities/recordsParamVar1.xml"
-	fileRecordsParamVar2  = "../../internal/business/sampleEntities/recordsParamVar2.xml"
+	methodMock               = "NewRequest"
+	fileAllDevices           = "../../internal/business/sampleEntities/allDevices.xml"
+	fileDevicesInfoParam0    = "../../internal/business/sampleEntities/deviceInfoParam0.xml"
+	fileDevicesInfoParam1    = "../../internal/business/sampleEntities/deviceInfoParam1.xml"
+	fileDevicesInfoParam2    = "../../internal/business/sampleEntities/deviceInfoParam2.xml"
+	fileDevicesSelectionInfo = "../../internal/business/sampleEntities/devicesSelectionInfo.xml"
+	fileVarInfoParam0        = "../../internal/business/sampleEntities/varInfoParam0.xml"
+	fileVarInfoParamId1      = "../../internal/business/sampleEntities/varInfoParamId1.xml"
+	fileVarInfoParamId2      = "../../internal/business/sampleEntities/varInfoParamId2.xml"
+	fileVarInfoParamVar1     = "../../internal/business/sampleEntities/varInfoParamVar1.xml"
+	fileVarInfoParamVar2     = "../../internal/business/sampleEntities/varInfoParamVar2.xml"
+	fileVarValueParam0       = "../../internal/business/sampleEntities/varValueParam0.xml"
+	fileVarValueParamId1     = "../../internal/business/sampleEntities/varValueParamId1.xml"
+	fileVarValueParamId2     = "../../internal/business/sampleEntities/varValueParamId2.xml"
+	fileVarValueParamVar1    = "../../internal/business/sampleEntities/varValueParamVar1.xml"
+	fileVarValueParamVar2    = "../../internal/business/sampleEntities/varValueParamVar2.xml"
+	fileRecordsParamVar0     = "../../internal/business/sampleEntities/recordsParamVar0.xml"
+	fileRecordsParamVar1     = "../../internal/business/sampleEntities/recordsParamVar1.xml"
+	fileRecordsParamVar2     = "../../internal/business/sampleEntities/recordsParamVar2.xml"
 )
 
 func TestAllDevices(t *testing.T) {
@@ -232,6 +233,81 @@ func TestDeviceInfo(t *testing.T) {
 			devices, err := ps.PsDeviceInfo(nil)
 
 			assert.Equal(t, 0, len(devices.Device))
+			assert.Error(t, err)
+		}
+	}
+}
+
+func TestDevicesSelectionInfo(t *testing.T) {
+	t.Parallel()
+
+	t.Logf("Given the need to call DevicesSelectionInfo method API.")
+	{
+		uri := "http://localhost/services/devices/devicesSelectionInfo.xml"
+
+		t.Logf("\tWhen a correct api call.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
+
+			xmlFile, err := os.Open(fileDevicesSelectionInfo)
+			require.NoError(t, err)
+
+			byteValue, err := io.ReadAll(xmlFile)
+			require.NoError(t, err)
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return(byteValue, http.StatusOK, nil)
+
+			ps.Request = mock
+
+			devicesSelectionInfo, err := ps.PsDevicesSelectionInfo()
+
+			assert.Nil(t, err)
+			assert.GreaterOrEqual(t, len(devicesSelectionInfo.Devices.Device), 0)
+		}
+
+		t.Logf("\tWhen it fails because data unmarchal error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return([]byte(""), http.StatusOK, nil)
+
+			ps.Request = mock
+
+			devicesSelectionInfo, err := ps.PsDevicesSelectionInfo()
+
+			assert.Error(t, err)
+			assert.Equal(t, 0, len(devicesSelectionInfo.Devices.Device))
+		}
+
+		t.Logf("\tWhen it fails because power studio error.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
+
+			uri := "http://10.10.10.10/services/devices/devicesSelectionInfo.xml"
+
+			mock := new(mocks.RequestMock)
+			mock.On(methodMock, http.MethodGet, uri, nil, []map[string]interface{}(nil)).
+				Return([]byte(""), http.StatusNotFound, nil)
+
+			ps.Request = mock
+
+			devicesSelectionInfo, err := ps.PsDevicesSelectionInfo()
+
+			assert.Equal(t, 0, len(devicesSelectionInfo.Devices.Device))
+			assert.Equal(t, errors.ErrPowerStudioAPI, err)
+		}
+
+		t.Logf("\tWhen it fails because there is timeout.")
+		{
+			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
+
+			devicesSelectionInfo, err := ps.PsDevicesSelectionInfo()
+
+			assert.Equal(t, 0, len(devicesSelectionInfo.Devices.Device))
 			assert.Error(t, err)
 		}
 	}
