@@ -2,6 +2,7 @@ package powerstudioapi
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/circutor/ps-go-client/internal/business/model"
 	"github.com/circutor/ps-go-client/internal/business/sys/data"
@@ -37,7 +38,7 @@ type PowerStudioAPI interface {
 	PsDevicesSelectionInfo() (*model.DevicesSelectionInfo, error)
 	PsVarInfo(ids, vars []string) (*model.VarInfo, error)
 	PsVarValue(ids, vars []string) (*model.Values, error)
-	PsRecords(begin, end string, period int, vars []string) (*model.RecordGroup, error)
+	PsRecords(begin, end time.Time, period int, vars []string) (*model.RecordGroup, error)
 }
 
 // PsAllDevices get all devices from power studio.
@@ -160,17 +161,17 @@ func (ps *PowerStudio) PsVarValue(ids, vars []string) (*model.Values, error) {
 }
 
 // PsRecords get a records values from power studio.
-func (ps *PowerStudio) PsRecords(begin, end string, period int, vars []string) (*model.RecordGroup, error) {
+func (ps *PowerStudio) PsRecords(begin, end time.Time, period int, vars []string) (*model.RecordGroup, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIRecord
 
 	parameters := powerstudio.ParseParameters(nil, vars)
 
-	if begin == "" || end == "" {
+	if begin.IsZero() || end.IsZero() {
 		return &model.RecordGroup{}, errors.ErrPowerStudioParameters
 	}
 
-	parameters = append(parameters, map[string]interface{}{"begin": begin})
-	parameters = append(parameters, map[string]interface{}{"end": end})
+	parameters = append(parameters, map[string]interface{}{"begin": powerstudio.ParseDateToPsFormat(begin)})
+	parameters = append(parameters, map[string]interface{}{"end": powerstudio.ParseDateToPsFormat(end)})
 
 	if period > 0 {
 		parameters = append(parameters, map[string]interface{}{"period": period})
