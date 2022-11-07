@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -703,7 +704,10 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+			timeEnd := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+
+			records, err := ps.PsRecords(timeBegin, timeEnd, 0, nil)
 
 			assert.Nil(t, err)
 			assert.Equal(t, 0, len(records.Record))
@@ -731,7 +735,10 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 0, []string{"CVM-C5.VMX23"})
+			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+			timeEnd := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+
+			records, err := ps.PsRecords(timeBegin, timeEnd, 0, []string{"CVM-C5.VMX23"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 40, len(records.Record))
@@ -761,7 +768,10 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 10, []string{"CVM-C5.VMX23", "CVM-C5.AET1"})
+			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+			timeEnd := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+
+			records, err := ps.PsRecords(timeBegin, timeEnd, 10, []string{"CVM-C5.VMX23", "CVM-C5.AET1"})
 
 			assert.Nil(t, err)
 			assert.Equal(t, 40, len(records.Record))
@@ -782,7 +792,10 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+			timeEnd := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+
+			records, err := ps.PsRecords(timeBegin, timeEnd, 0, nil)
 
 			assert.Error(t, err)
 			assert.Equal(t, 0, len(records.Record))
@@ -805,7 +818,10 @@ func TestRecords(t *testing.T) {
 
 			ps.Request = mock
 
-			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+			timeEnd := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+
+			records, err := ps.PsRecords(timeBegin, timeEnd, 0, nil)
 
 			assert.Equal(t, 0, len(records.Record))
 			assert.Equal(t, errors.ErrPowerStudioAPI, err)
@@ -815,7 +831,10 @@ func TestRecords(t *testing.T) {
 		{
 			ps := powerStudioAPI.NewPowerStudio("10.10.10.10", "", "")
 
-			records, err := ps.PsRecords("18102022", "18102022", 0, nil)
+			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+			timeEnd := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+
+			records, err := ps.PsRecords(timeBegin, timeEnd, 0, nil)
 
 			assert.Equal(t, 0, len(records.Record))
 			assert.Error(t, err)
@@ -825,12 +844,15 @@ func TestRecords(t *testing.T) {
 		{
 			ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
 
-			records, err := ps.PsRecords("18102022", "", 0, nil)
+			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
+			timeEnd := time.Date(2022, 10, 19, 0, 0, 0, 0, time.UTC)
+
+			records, err := ps.PsRecords(timeBegin, time.Time{}, 0, nil)
 
 			assert.Equal(t, 0, len(records.Record))
 			assert.Error(t, err)
 
-			records, err = ps.PsRecords("", "19102022", 0, nil)
+			records, err = ps.PsRecords(time.Time{}, timeEnd, 0, nil)
 
 			assert.Equal(t, 0, len(records.Record))
 			assert.Error(t, err)

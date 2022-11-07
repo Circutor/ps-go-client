@@ -1,5 +1,10 @@
 package powerstudio
 
+import (
+	"strconv"
+	"time"
+)
+
 const (
 	HTTTP = "http://"
 
@@ -24,4 +29,9 @@ func ParseParameters(ids, vars []string) []map[string]interface{} {
 	}
 
 	return parameters
+}
+
+// ParseDateToPsFormat convert date type time.time to format power studio.
+func ParseDateToPsFormat(time time.Time) string {
+	return strconv.Itoa(time.Day()) + strconv.Itoa(int(time.Month())) + strconv.Itoa(time.Year())
 }
