@@ -123,3 +123,96 @@ type RecordGroup struct {
 		} `xml:"fieldEVQ"`
 	} `xml:"record"`
 }
+
+// DevicesSelectionInfo identify  the main XML  as  a  response  to  the  request  devices selection info.
+type DevicesSelectionInfo struct {
+	XMLName               xml.Name `xml:"devicesSelectionInfo"`
+	Text                  string   `xml:",chardata"`
+	DeviceID              string   `xml:"deviceId"`
+	CalculatedVariablesID string   `xml:"calculatedVariablesId"`
+	EventID               string   `xml:"eventId"`
+	Devices               struct {
+		Text   string `xml:",chardata"`
+		Device []struct {
+			Chardata  string `xml:",chardata"`
+			Enabled   string `xml:"enabled"`
+			CanSelect string `xml:"canSelect"`
+			Visible   string `xml:"visible"`
+			Event     string `xml:"event"`
+			Scada     string `xml:"scada"`
+			Report    string `xml:"report"`
+			Logger    struct {
+				Text  string `xml:",chardata"`
+				GSTD  string `xml:"GSTD"`
+				GARM  string `xml:"GARM"`
+				GHEVQ string `xml:"GHEVQ"`
+				GDEVQ string `xml:"GDEVQ"`
+				TEVE  string `xml:"TEVE"`
+			} `xml:"logger"`
+			ID    string `xml:"id"`
+			Type  string `xml:"type"`
+			Image struct {
+				Text    string `xml:",chardata"`
+				ImageID string `xml:"imageId"`
+			} `xml:"image"`
+			GUID          string `xml:"guid"`
+			Discriminable string `xml:"discriminable"`
+			Forced        string `xml:"forced"`
+			Text          struct {
+				Text    string `xml:",chardata"`
+				TextID  string `xml:"textId"`
+				TextStr string `xml:"textStr"`
+			} `xml:"text"`
+			DirectVars struct {
+				Text string `xml:",chardata"`
+				TEVE string `xml:"TEVE"`
+			} `xml:"directVars"`
+			DirectVarsFlags struct {
+				Text string `xml:",chardata"`
+				TEVE string `xml:"TEVE"`
+			} `xml:"directVarsFlags"`
+		} `xml:"device"`
+	} `xml:"devices"`
+	Root struct {
+		Text  string `xml:",chardata"`
+		Name  string `xml:"name"`
+		Group []struct {
+			Text  string `xml:",chardata"`
+			Name  string `xml:"name"`
+			Group []struct {
+				Text   string `xml:",chardata"`
+				Name   string `xml:"name"`
+				Device []struct {
+					Text string `xml:",chardata"`
+					ID   string `xml:"id"`
+				} `xml:"device"`
+			} `xml:"group"`
+			Device []struct {
+				Text string `xml:",chardata"`
+				ID   string `xml:"id"`
+			} `xml:"device"`
+		} `xml:"group"`
+		Device []struct {
+			Text string `xml:",chardata"`
+			ID   string `xml:"id"`
+		} `xml:"device"`
+	} `xml:"root"`
+	Image []struct {
+		Text    string `xml:",chardata"`
+		ImageID string `xml:"imageId"`
+		Image64 string `xml:"image64"`
+	} `xml:"image"`
+	Discriminators string `xml:"discriminators"`
+	Loggers        struct {
+		Text   string `xml:",chardata"`
+		Logger []struct {
+			Chardata string `xml:",chardata"`
+			Type     string `xml:"type"`
+			Text     struct {
+				Text   string `xml:",chardata"`
+				TextID string `xml:"textId"`
+			} `xml:"text"`
+			AllowDiscriminator string `xml:"allowDiscriminator"`
+		} `xml:"logger"`
+	} `xml:"loggers"`
+}

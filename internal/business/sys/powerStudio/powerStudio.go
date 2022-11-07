@@ -3,11 +3,12 @@ package powerstudio
 const (
 	HTTTP = "http://"
 
-	URIAllDevices  = "/services/user/devices.xml"
-	URIDevicesInfo = "/services/user/deviceInfo.xml"
-	URIVarInfo     = "/services/user/varInfo.xml"
-	URIVarValue    = "/services/user/values.xml"
-	URIRecord      = "/services/user/records.xml"
+	URIAllDevices           = "/services/user/devices.xml"
+	URIDevicesInfo          = "/services/user/deviceInfo.xml"
+	URIDevicesSelectionInfo = "/services/devices/devicesSelectionInfo.xml"
+	URIVarInfo              = "/services/user/varInfo.xml"
+	URIVarValue             = "/services/user/values.xml"
+	URIRecord               = "/services/user/records.xml"
 )
 
 // ParseParameters parse list ids and list vars to parameters accept power studio.
