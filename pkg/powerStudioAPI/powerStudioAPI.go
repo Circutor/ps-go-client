@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/circutor/ps-go-client/internal/business/model"
+	models "github.com/circutor/ps-go-client/pkg/models"
+
 	"github.com/circutor/ps-go-client/internal/business/sys/data"
 	"github.com/circutor/ps-go-client/internal/business/sys/errors"
 	httpRequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
@@ -31,79 +32,81 @@ func NewPowerStudio(host, username, password string) PowerStudio {
 	}
 }
 
+//go:generate mockery --name PowerStudioAPI --structname PowerStudioAPIMock --filename PowerStudioAPIMock.go
+
 // PowerStudioAPI contains methods power studio API.
 type PowerStudioAPI interface {
-	PsAllDevices() (*model.Devices, error)
-	PsDeviceInfo(ids []string) (*model.DevicesInfo, error)
-	PsDevicesSelectionInfo() (*model.DevicesSelectionInfo, error)
-	PsVarInfo(ids, vars []string) (*model.VarInfo, error)
-	PsVarValue(ids, vars []string) (*model.Values, error)
-	PsRecords(begin, end time.Time, period int, vars []string) (*model.RecordGroup, error)
+	PsAllDevices() (*models.Devices, error)
+	PsDeviceInfo(ids []string) (*models.DevicesInfo, error)
+	PsDevicesSelectionInfo() (*models.DevicesSelectionInfo, error)
+	PsVarInfo(ids, vars []string) (*models.VarInfo, error)
+	PsVarValue(ids, vars []string) (*models.Values, error)
+	PsRecords(begin, end time.Time, period int, vars []string) (*models.RecordGroup, error)
 }
 
 // PsAllDevices get all devices from power studio.
-func (ps *PowerStudio) PsAllDevices() (*model.Devices, error) {
+func (ps *PowerStudio) PsAllDevices() (*models.Devices, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIAllDevices
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, nil)
 	if err != nil {
-		return &model.Devices{}, err
+		return &models.Devices{}, err
 	}
 
 	if statusCode != http.StatusOK {
-		return &model.Devices{}, errors.ErrPowerStudioAPI
+		return &models.Devices{}, errors.ErrPowerStudioAPI
 	}
 
-	body, err := data.BodyDecode(resBody, &model.Devices{})
+	body, err := data.BodyDecode(resBody, &models.Devices{})
 	if err != nil {
-		return &model.Devices{}, err
+		return &models.Devices{}, err
 	}
 
-	return body.(*model.Devices), nil
+	return body.(*models.Devices), nil
 }
 
 // PsDeviceInfo get a devices information from power studio.
-func (ps *PowerStudio) PsDeviceInfo(ids []string) (*model.DevicesInfo, error) {
+func (ps *PowerStudio) PsDeviceInfo(ids []string) (*models.DevicesInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIDevicesInfo
 
 	parameters := powerstudio.ParseParameters(ids, nil)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
-		return &model.DevicesInfo{}, err
+		return &models.DevicesInfo{}, err
 	}
 
 	if statusCode != http.StatusOK {
-		return &model.DevicesInfo{}, errors.ErrPowerStudioAPI
+		return &models.DevicesInfo{}, errors.ErrPowerStudioAPI
 	}
 
-	body, err := data.BodyDecode(resBody, &model.DevicesInfo{})
+	body, err := data.BodyDecode(resBody, &models.DevicesInfo{})
 	if err != nil {
-		return &model.DevicesInfo{}, err
+		return &models.DevicesInfo{}, err
 	}
 
-	return body.(*model.DevicesInfo), nil
+	return body.(*models.DevicesInfo), nil
 }
 
 // PsDevicesSelectionInfo get a devices selection information from power studio.
-func (ps *PowerStudio) PsDevicesSelectionInfo() (*model.DevicesSelectionInfo, error) {
+func (ps *PowerStudio) PsDevicesSelectionInfo() (*models.DevicesSelectionInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIDevicesSelectionInfo
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, nil)
 	if err != nil {
-		return &model.DevicesSelectionInfo{}, err
+		return &models.DevicesSelectionInfo{}, err
 	}
 
 	if statusCode != http.StatusOK {
-		return &model.DevicesSelectionInfo{}, errors.ErrPowerStudioAPI
+		return &models.DevicesSelectionInfo{}, errors.ErrPowerStudioAPI
 	}
 
-	body, err := data.BodyDecode(resBody, &model.DevicesSelectionInfo{})
+	body, err := data.BodyDecode(resBody, &models.DevicesSelectionInfo{})
 	if err != nil {
-		return &model.DevicesSelectionInfo{}, err
+		return &models.DevicesSelectionInfo{}, err
 	}
 
-	return body.(*model.DevicesSelectionInfo), nil
+	return body.(*models.DevicesSelectionInfo), nil
 }
 
 // PsVarInfo get an information variables from power studio.
@@ -111,26 +114,26 @@ func (ps *PowerStudio) PsDevicesSelectionInfo() (*model.DevicesSelectionInfo, er
 // If parameter content `ids` return all variables from device.
 //
 // If parameter content `vars` return variables from the device it belongs to.
-func (ps *PowerStudio) PsVarInfo(ids, vars []string) (*model.VarInfo, error) {
+func (ps *PowerStudio) PsVarInfo(ids, vars []string) (*models.VarInfo, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarInfo
 
 	parameters := powerstudio.ParseParameters(ids, vars)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
-		return &model.VarInfo{}, err
+		return &models.VarInfo{}, err
 	}
 
 	if statusCode != http.StatusOK {
-		return &model.VarInfo{}, errors.ErrPowerStudioAPI
+		return &models.VarInfo{}, errors.ErrPowerStudioAPI
 	}
 
-	body, err := data.BodyDecode(resBody, &model.VarInfo{})
+	body, err := data.BodyDecode(resBody, &models.VarInfo{})
 	if err != nil {
-		return &model.VarInfo{}, err
+		return &models.VarInfo{}, err
 	}
 
-	return body.(*model.VarInfo), nil
+	return body.(*models.VarInfo), nil
 }
 
 // PsVarValue get a value variables from power studio.
@@ -138,36 +141,36 @@ func (ps *PowerStudio) PsVarInfo(ids, vars []string) (*model.VarInfo, error) {
 // If parameter content `ids` return all values of variables from device.
 //
 // If parameter content `vars` return  value of variables from the device it belongs to.
-func (ps *PowerStudio) PsVarValue(ids, vars []string) (*model.Values, error) {
+func (ps *PowerStudio) PsVarValue(ids, vars []string) (*models.Values, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIVarValue
 
 	parameters := powerstudio.ParseParameters(ids, vars)
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
-		return &model.Values{}, err
+		return &models.Values{}, err
 	}
 
 	if statusCode != http.StatusOK {
-		return &model.Values{}, errors.ErrPowerStudioAPI
+		return &models.Values{}, errors.ErrPowerStudioAPI
 	}
 
-	body, err := data.BodyDecode(resBody, &model.Values{})
+	body, err := data.BodyDecode(resBody, &models.Values{})
 	if err != nil {
-		return &model.Values{}, err
+		return &models.Values{}, err
 	}
 
-	return body.(*model.Values), nil
+	return body.(*models.Values), nil
 }
 
 // PsRecords get a records values from power studio.
-func (ps *PowerStudio) PsRecords(begin, end time.Time, period int, vars []string) (*model.RecordGroup, error) {
+func (ps *PowerStudio) PsRecords(begin, end time.Time, period int, vars []string) (*models.RecordGroup, error) {
 	uri := powerstudio.HTTTP + ps.Host + powerstudio.URIRecord
 
 	parameters := powerstudio.ParseParameters(nil, vars)
 
 	if begin.IsZero() || end.IsZero() {
-		return &model.RecordGroup{}, errors.ErrPowerStudioParameters
+		return &models.RecordGroup{}, errors.ErrPowerStudioParameters
 	}
 
 	parameters = append(parameters, map[string]interface{}{"begin": powerstudio.ParseDateToPsFormat(begin)})
@@ -179,17 +182,17 @@ func (ps *PowerStudio) PsRecords(begin, end time.Time, period int, vars []string
 
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, parameters)
 	if err != nil {
-		return &model.RecordGroup{}, err
+		return &models.RecordGroup{}, err
 	}
 
 	if statusCode != http.StatusOK {
-		return &model.RecordGroup{}, errors.ErrPowerStudioAPI
+		return &models.RecordGroup{}, errors.ErrPowerStudioAPI
 	}
 
-	body, err := data.BodyDecode(resBody, &model.RecordGroup{})
+	body, err := data.BodyDecode(resBody, &models.RecordGroup{})
 	if err != nil {
-		return &model.RecordGroup{}, err
+		return &models.RecordGroup{}, err
 	}
 
-	return body.(*model.RecordGroup), nil
+	return body.(*models.RecordGroup), nil
 }

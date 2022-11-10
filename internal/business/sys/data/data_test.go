@@ -1,8 +1,8 @@
 package data_test
 
 import (
-	"github.com/circutor/ps-go-client/internal/business/model"
 	"github.com/circutor/ps-go-client/internal/business/sys/data"
+	models "github.com/circutor/ps-go-client/pkg/models"
 	"io"
 	"os"
 	"testing"
@@ -18,14 +18,14 @@ func TestBodyDecode(t *testing.T) {
 	byteValue, err := io.ReadAll(xmlFile)
 	require.NoError(t, err)
 
-	decode, err := data.BodyDecode(byteValue, &model.Devices{})
+	decode, err := data.BodyDecode(byteValue, &models.Devices{})
 
 	assert.NotEmpty(t, decode)
 	assert.Nil(t, err)
 }
 
 func TestBodyDecodeError(t *testing.T) {
-	decode, err := data.BodyDecode([]byte(""), &model.Devices{})
+	decode, err := data.BodyDecode([]byte(""), &models.Devices{})
 
 	assert.Empty(t, decode)
 	assert.Error(t, err)
