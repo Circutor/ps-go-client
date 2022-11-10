@@ -1,17 +1,20 @@
 package data_test
 
 import (
-	"github.com/circutor/ps-go-client/internal/business/sys/data"
-	models "github.com/circutor/ps-go-client/pkg/models"
+	"errors"
 	"io"
 	"os"
 	"testing"
 
+	"github.com/circutor/ps-go-client/internal/business/sys/data"
+	models "github.com/circutor/ps-go-client/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBodyDecode(t *testing.T) {
+	t.Parallel()
+
 	xmlFile, err := os.Open("../../sampleEntities/allDevices.xml")
 	require.NoError(t, err)
 
@@ -25,8 +28,10 @@ func TestBodyDecode(t *testing.T) {
 }
 
 func TestBodyDecodeError(t *testing.T) {
+	t.Parallel()
+
 	decode, err := data.BodyDecode([]byte(""), &models.Devices{})
 
 	assert.Empty(t, decode)
-	assert.Error(t, err)
+	assert.Equal(t, true, errors.Is(err, io.EOF))
 }

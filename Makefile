@@ -11,7 +11,7 @@ tidy:
 lint:
 	golangci-lint version
 	golangci-lint linters
-	golangci-lint run --fix
+	golangci-lint run
 
 # Test
 test:

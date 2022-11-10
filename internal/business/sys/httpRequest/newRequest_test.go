@@ -1,10 +1,10 @@
 package httprequest_test
 
 import (
-	httpRequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
 	"net/http"
 	"testing"
 
+	httpRequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
 	"github.com/stretchr/testify/assert"
 )
 

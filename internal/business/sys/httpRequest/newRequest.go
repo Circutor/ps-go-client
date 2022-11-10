@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/circutor/ps-go-client/internal/business/sys/errors"
 )
 
 // NewRequest generate request.
@@ -17,7 +15,7 @@ func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
 
 	req, err := http.NewRequestWithContext(ctx, method, url, body)
 	if err != nil {
-		return nil, http.StatusInternalServerError, fmt.Errorf("%s : %w", errors.ErrHTTPRequestCreate, err)
+		return nil, http.StatusInternalServerError, fmt.Errorf("httprequest.NewRequest.NewRequestWithContext: %w", err)
 	}
 
 	if query != nil {
@@ -26,18 +24,19 @@ func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
 
 	resp, err := makeRequest(req, r.Username, r.Password)
 	if err != nil {
-		return nil, http.StatusInternalServerError, fmt.Errorf("%w", err)
+		return nil, http.StatusInternalServerError, fmt.Errorf("httprequest.NewRequest: %w", err)
 	}
 
 	defer func(Body io.ReadCloser) {
 		if err := Body.Close(); err != nil {
+			//nolint: forbidigo
 			fmt.Println(err)
 		}
 	}(resp.Body)
 
 	respBody, err := getBody(resp)
 	if err != nil {
-		return nil, http.StatusInternalServerError, fmt.Errorf("%w", err)
+		return nil, http.StatusInternalServerError, fmt.Errorf("httprequest.NewRequest: %w", err)
 	}
 
 	return respBody, resp.StatusCode, nil

@@ -10,7 +10,7 @@ import (
 	"golang.org/x/net/publicsuffix"
 )
 
-const timeout = 20
+const timeout = 5
 
 // customTransport transport configuration.
 type customTransport struct {

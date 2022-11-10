@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/circutor/ps-go-client/internal/business/sys/errors"
 	"github.com/circutor/ps-go-client/internal/business/sys/httpRequest/config"
 )
 
@@ -48,7 +47,7 @@ func makeRequest(req *http.Request, username, password string) (*http.Response, 
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("%s : %w", errors.ErrHTTPRequestSend, err)
+		return nil, fmt.Errorf("httprequest.makeRequest: %w", err)
 	}
 
 	return resp, nil
@@ -58,7 +57,7 @@ func makeRequest(req *http.Request, username, password string) (*http.Response, 
 func getBody(resp *http.Response) ([]byte, error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("%s : %w", errors.ErrHTTPRequestReadBody, err)
+		return nil, fmt.Errorf("httprequest.getBody: %w", err)
 	}
 
 	return body, nil
