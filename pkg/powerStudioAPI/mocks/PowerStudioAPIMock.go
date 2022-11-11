@@ -83,6 +83,11 @@ func (_m *PowerStudioAPIMock) PsDevicesSelectionInfo() (*modelss.DevicesSelectio
 	return r0, r1
 }
 
+// PsLoadConfig provides a mock function with given fields: host, user, password
+func (_m *PowerStudioAPIMock) PsLoadConfig(host string, user string, password string) {
+	_m.Called(host, user, password)
+}
+
 // PsRecords provides a mock function with given fields: begin, end, period, vars
 func (_m *PowerStudioAPIMock) PsRecords(begin time.Time, end time.Time, period int, vars []string) (*modelss.RecordGroup, error) {
 	ret := _m.Called(begin, end, period, vars)

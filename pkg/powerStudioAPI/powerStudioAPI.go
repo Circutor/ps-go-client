@@ -42,6 +42,7 @@ type PowerStudioAPI interface {
 	PsVarInfo(ids, vars []string) (*models.VarInfo, error)
 	PsVarValue(ids, vars []string) (*models.Values, error)
 	PsRecords(begin, end time.Time, period int, vars []string) (*models.RecordGroup, error)
+	PsLoadConfig(host, user, password string)
 }
 
 // PsAllDevices get all devices from power studio.
@@ -159,6 +160,13 @@ func (ps *PowerStudio) PsRecords(begin, end time.Time, period int, vars []string
 	}
 
 	return body.(*models.RecordGroup), nil
+}
+
+// PsLoadConfig load config.
+func (ps *PowerStudio) PsLoadConfig(host, user, password string) {
+	ps.Host = host
+	ps.Username = user
+	ps.Password = password
 }
 
 // requestPs call methods power studio.

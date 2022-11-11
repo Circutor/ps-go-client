@@ -896,3 +896,27 @@ func TestRecords(t *testing.T) {
 		}
 	}
 }
+
+func TestLoadConfig(t *testing.T) {
+	t.Parallel()
+
+	t.Logf("Given the need to call load config method API.")
+	{
+		t.Logf("\tWhen a correct api call load config.")
+		{
+			const (
+				host     = "0.0.0.0"
+				user     = "user"
+				password = "password"
+			)
+
+			ps := psAPI.NewPowerStudio("", "", "")
+
+			ps.PsLoadConfig(host, user, password)
+
+			assert.Equal(t, host, ps.Host)
+			assert.Equal(t, user, ps.Username)
+			assert.Equal(t, password, ps.Password)
+		}
+	}
+}
