@@ -1,7 +1,6 @@
 package powerstudio
 
 import (
-	"strconv"
 	"time"
 )
 
@@ -33,5 +32,5 @@ func ParseParameters(ids, vars []string) []map[string]interface{} {
 
 // ParseDateToPsFormat convert date type time.time to format power studio.
 func ParseDateToPsFormat(time time.Time) string {
-	return strconv.Itoa(time.Day()) + strconv.Itoa(int(time.Month())) + strconv.Itoa(time.Year())
+	return time.Format("02012006150405")
 }

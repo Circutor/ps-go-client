@@ -267,8 +267,8 @@ Returns records value.
 * URI API
     * `http://<host>/services/user/records.xml`
     * Parameters
-        * **begin**: `?begin=DDMMYYYY`
-        * **end**: `?end=DDMMYYYY`
+        * **begin**: `?begin=DDMMYYYYHHMMSS`
+        * **end**: `?end=DDMMYYYYHHMMSS`
         * **period**: `?period=vuale`: Default value 0.
         * **var**: `?var=deviceVar-1?var=DeviceVar-n`
 * Response
@@ -280,18 +280,18 @@ Returns records value.
 	      Record  []struct {
 		         Text     string `xml:",chardata"`
 		         DateTime string `xml:"dateTime"`
-		         Field    struct {
+		         Field    []struct {
 			          Text  string `xml:",chardata"`
 			          ID    string `xml:"id"`
 			          Value string `xml:"value"`
 		         } `xml:"field"`
-		         FieldComplex struct {
+		         FieldComplex []struct {
 			          Text  string `xml:",chardata"`
 			          ID    string `xml:"id"`
 			          Value string `xml:"value"`
 			          Flags string `xml:"flags"`
 		         } `xml:"fieldComplex"`
-		         FieldARM struct {
+		         FieldARM []struct {
 			          Text    string `xml:",chardata"`
 			          ID      string `xml:"id"`
 			          Element []struct {
@@ -300,7 +300,7 @@ Returns records value.
 				            Value    string `xml:"value"`
 			          } `xml:"element"`
 		         } `xml:"fieldARM"`
-		         FieldFO struct {
+		         FieldFO []struct {
 			          Text    string `xml:",chardata"`
 			          ID      string `xml:"id"`
 			          Element []struct {
@@ -309,7 +309,7 @@ Returns records value.
 				            Value string `xml:"value"`
 			          } `xml:"element"`
 		         } `xml:"fieldFO"`
-		         FieldEVQ struct {
+		         FieldEVQ []struct {
 			          Text             string `xml:",chardata"`
 			          ID               string `xml:"id"`
 			          Value            string `xml:"value"`

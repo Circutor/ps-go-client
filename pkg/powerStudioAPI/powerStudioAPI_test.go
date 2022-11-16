@@ -722,8 +722,8 @@ func TestRecords(t *testing.T) {
 			require.NoError(t, err)
 
 			parameter := []map[string]interface{}{
-				{"begin": "18102022"},
-				{"end": "18102022"},
+				{"begin": "18102022000000"},
+				{"end": "18102022000000"},
 			}
 
 			mock := new(mocks.RequestMock)
@@ -753,8 +753,8 @@ func TestRecords(t *testing.T) {
 
 			parameter := []map[string]interface{}{
 				{"var": "CVM-C5.VMX23"},
-				{"begin": "18102022"},
-				{"end": "18102022"},
+				{"begin": "18102022000000"},
+				{"end": "18102022000000"},
 			}
 
 			mock := new(mocks.RequestMock)
@@ -785,8 +785,8 @@ func TestRecords(t *testing.T) {
 			parameter := []map[string]interface{}{
 				{"var": "CVM-C5.VMX23"},
 				{"var": "CVM-C5.AET1"},
-				{"begin": "18102022"},
-				{"end": "18102022"},
+				{"begin": "18102022000000"},
+				{"end": "18102022000000"},
 				{"period": 10},
 			}
 
@@ -810,8 +810,8 @@ func TestRecords(t *testing.T) {
 			ps := psAPI.NewPowerStudio("localhost", "", "")
 
 			parameter := []map[string]interface{}{
-				{"begin": "18102022"},
-				{"end": "18102022"},
+				{"begin": "18102022000000"},
+				{"end": "18102022000000"},
 			}
 
 			mock := new(mocks.RequestMock)
@@ -836,8 +836,8 @@ func TestRecords(t *testing.T) {
 			uri := "http://10.10.10.10/services/user/records.xml"
 
 			parameter := []map[string]interface{}{
-				{"begin": "18102022"},
-				{"end": "18102022"},
+				{"begin": "18102022000000"},
+				{"end": "18102022000000"},
 			}
 
 			timeBegin := time.Date(2022, 10, 18, 0, 0, 0, 0, time.UTC)
