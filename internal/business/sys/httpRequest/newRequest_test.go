@@ -13,7 +13,26 @@ func TestErrorRequest(t *testing.T) {
 
 	r := httpRequest.HTTPRequest{}
 
-	_, status, _ := r.NewRequest("GET", "/", nil, nil)
+	_, status, err := r.NewRequest("GET\000", "/", nil, nil)
+
+	assert.Error(t, err)
+	assert.Equal(t, status, http.StatusInternalServerError)
+
+	_, status, err = r.NewRequest("GET", "/", nil, nil)
+
+	assert.Error(t, err)
+	assert.Equal(t, status, http.StatusInternalServerError)
+
+	r = httpRequest.NewHTTPRequest("", "")
+
+	_, status, err = r.NewRequest("GET\000", "/", nil, nil)
+
+	assert.Error(t, err)
+	assert.Equal(t, status, http.StatusInternalServerError)
+
+	_, status, err = r.NewRequest("GET", "/", nil, nil)
+
+	assert.Error(t, err)
 	assert.Equal(t, status, http.StatusInternalServerError)
 }
 

@@ -173,7 +173,7 @@ func (ps *PowerStudio) PsLoadConfig(host, user, password string) {
 func (ps *PowerStudio) requestPs(uri string, query []map[string]interface{}) ([]byte, error) {
 	resBody, statusCode, err := ps.Request.NewRequest("GET", uri, nil, query)
 	if err != nil {
-		return nil, fmt.Errorf("powerstudioapi.requestPs: %w", err)
+		return nil, fmt.Errorf("powerstudioapi.requestPs: %w", errors.ErrPowerStudioRequest)
 	}
 
 	if statusCode != http.StatusOK {
