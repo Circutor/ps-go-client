@@ -67,7 +67,6 @@ linters:
     - errorlint
     - gochecknoglobals
     - forbidigo
-    - gomnd
     - gci
     - tagliatelle
     - wrapcheck
@@ -76,6 +75,7 @@ linters:
     - dupl
   disable:
     - forcetypeassert
+    - gomnd
 issues:
   exclude-rules:
     - path: (.+)_test.go
