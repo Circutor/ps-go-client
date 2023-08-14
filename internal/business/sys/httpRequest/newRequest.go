@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"time"
 )
 
 // NewRequest generate request.
@@ -12,6 +14,10 @@ func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
 	query []map[string]interface{},
 ) ([]byte, int, error) {
 	ctx := context.Background()
+
+	start := time.Now()
+
+	log.Printf("PowerStudio started    method: %s  url: %s\n", method, url)
 
 	req, err := http.NewRequestWithContext(ctx, method, url, body)
 	if err != nil {
@@ -38,6 +44,9 @@ func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
 	if err != nil {
 		return nil, http.StatusInternalServerError, fmt.Errorf("httprequest.NewRequest: %w", err)
 	}
+
+	log.Printf("PowerStudio completed  method: %s  url: %s  statusCode: %d  exec_time: %f\n",
+		method, url, resp.StatusCode, float64(time.Since(start))/1000000)
 
 	return respBody, resp.StatusCode, nil
 }
