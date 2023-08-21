@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"time"
 )
@@ -43,8 +42,8 @@ func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
 		return nil, http.StatusInternalServerError, fmt.Errorf("httprequest.NewRequest: %w", err)
 	}
 
-	log.Printf("PowerStudio  %s <%s>  statusCode: %d  exec_time: %f ms\n",
-		method, url, resp.StatusCode, float64(time.Since(start))/1000000)
+	r.Logger.Info("request ", method, " ", url, "statusCode: ", resp.StatusCode, " exec_time ",
+		float64(time.Since(start))/1000000, " ms")
 
 	return respBody, resp.StatusCode, nil
 }

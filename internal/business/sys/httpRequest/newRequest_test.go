@@ -23,7 +23,7 @@ func TestErrorRequest(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, status, http.StatusInternalServerError)
 
-	r = httpRequest.NewHTTPRequest("", "")
+	r = httpRequest.NewHTTPRequest("", "", nil)
 
 	_, status, err = r.NewRequest("GET\000", "/", nil, nil)
 
