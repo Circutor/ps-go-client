@@ -1,4 +1,4 @@
-image: circutor/docker_go:v1.19.1
+image: circutor/docker_go:1.21.0
 variables:
   DOCKER_DRIVER: overlay2
   GIT_DEPTH: 1

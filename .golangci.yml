@@ -11,7 +11,6 @@ linters:
     - bodyclose
     - contextcheck
     - cyclop
-    - depguard
     - dogsled
     - durationcheck
     - errcheck
@@ -76,6 +75,7 @@ linters:
   disable:
     - forcetypeassert
     - gomnd
+    - depguard
 issues:
   exclude-rules:
     - path: (.+)_test.go
