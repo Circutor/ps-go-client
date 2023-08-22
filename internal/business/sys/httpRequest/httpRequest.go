@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/circutor/ps-go-client/internal/business/sys/httpRequest/config"
+	"github.com/circutor/ps-go-client/pkg/logger"
 )
 
 // Request interface created a new request.
@@ -18,13 +19,15 @@ type Request interface {
 type HTTPRequest struct {
 	Username string
 	Password string
+	Logger   *logger.LogAdapter
 }
 
 // NewHTTPRequest creates a new NewRequest interface.
-func NewHTTPRequest(username, password string) HTTPRequest {
+func NewHTTPRequest(username, password string, log *logger.LogAdapter) HTTPRequest {
 	return HTTPRequest{
 		Username: username,
 		Password: password,
+		Logger:   log,
 	}
 }
 

@@ -20,14 +20,39 @@ Library that contains calls to the PowerStudio API
 ## Example <a name="example"></a>
 
 ```go
+// Init logger.
+// Example config logger with zap logger.
+cfg := zap.Config{
+    Encoding:    "console",
+    Level:       zap.NewAtomicLevelAt(zap.DebugLevel),
+    OutputPaths: []string{"stdout"},
+    EncoderConfig: zapcore.EncoderConfig{
+		MessageKey:   "msg",
+        LevelKey:     "level",
+        TimeKey:      "time",
+        CallerKey:    "caller",
+        EncodeCaller: zapcore.ShortCallerEncoder,
+        EncodeTime:   zapcore.ISO8601TimeEncoder,
+    },
+}
+
+zapLogger, _ := cfg.Build()
+sugaredLogger := zapLogger.Sugar()
+
+// Adapter method info.
+infoLogger := logger.Func(sugaredLogger.Info)
+
+// Init logger pattern.
+newLogger := logger.NewLogAdapter(infoLogger)
+
 // ps methods. 
-ps := powerStudioAPI.NewPowerStudio("localhost", "username", "password")
+ps := powerStudioAPI.NewPowerStudio("localhost", "username", "password", newLogger)
 
 // If the ps does not have authentication, the username and password values will be empty
-ps := powerStudioAPI.NewPowerStudio("localhost", "", "")
+ps := powerStudioAPI.NewPowerStudio("localhost", "", "", newLogger)
 
 // If the tps is in another address, the address will be like this
-ps := powerStudioAPI.NewPowerStudio("hostURL", "", "")
+ps := powerStudioAPI.NewPowerStudio("hostURL", "", "", newLogger)
 
 // get list of devices.
 devices, err := ps.PsAllDevices()

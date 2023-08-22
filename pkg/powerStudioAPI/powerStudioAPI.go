@@ -9,6 +9,7 @@ import (
 	httpRequest "github.com/circutor/ps-go-client/internal/business/sys/httpRequest"
 	"github.com/circutor/ps-go-client/internal/business/sys/powerStudio"
 	"github.com/circutor/ps-go-client/pkg/errors"
+	"github.com/circutor/ps-go-client/pkg/logger"
 	models "github.com/circutor/ps-go-client/pkg/models"
 )
 
@@ -21,8 +22,8 @@ type PowerStudio struct {
 }
 
 // NewPowerStudio creates a new PowerStudioAPI interface.
-func NewPowerStudio(host, username, password string) PowerStudio {
-	request := httpRequest.NewHTTPRequest(username, password)
+func NewPowerStudio(host, username, password string, log *logger.LogAdapter) PowerStudio {
+	request := httpRequest.NewHTTPRequest(username, password, log)
 
 	return PowerStudio{
 		Request:  &request,
