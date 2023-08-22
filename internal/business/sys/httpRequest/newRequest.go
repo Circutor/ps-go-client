@@ -30,12 +30,7 @@ func (r *HTTPRequest) NewRequest(method, url string, body io.Reader,
 		return nil, http.StatusInternalServerError, fmt.Errorf("httprequest.NewRequest: %w", err)
 	}
 
-	defer func(Body io.ReadCloser) {
-		if err := Body.Close(); err != nil {
-			//nolint: forbidigo
-			fmt.Println(err)
-		}
-	}(resp.Body)
+	defer resp.Body.Close()
 
 	respBody, err := getBody(resp)
 	if err != nil {
