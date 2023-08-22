@@ -2,17 +2,17 @@ package logger
 
 // LogAdapter struct Logger Interface.
 type LogAdapter struct {
-	infoLogger Logger
+	logger Logger
 }
 
 // NewLogAdapter init LogAdapter struct.
 func NewLogAdapter(infoLogger Logger) *LogAdapter {
 	return &LogAdapter{
-		infoLogger: infoLogger,
+		logger: infoLogger,
 	}
 }
 
 // Info adapter func Info method.
 func (log *LogAdapter) Info(args ...interface{}) {
-	log.infoLogger.Info(args...)
+	log.logger.Info(args...)
 }
